@@ -12,5 +12,12 @@
   "city": "北京",
   "style": "notebook",
   "avatar": "avatars/avatar-04.png",
-  "homepage": ""
+  "homepage": "",
+  "cheers": [
+    {
+      "from": "YJLEC",
+      "message": "吃烧烤！不要豆腐",
+      "ts": "2026-5-10"
+    }
+  ]
 }
