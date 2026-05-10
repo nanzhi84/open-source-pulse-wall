@@ -109,7 +109,7 @@ git push origin add-your-profile
 | `stack` | 是 | 技术标签数组，最多 5 项 |
 | `city` | 否 | 城市或课堂位置 |
 | `style` | 否 | 卡片风格：`minimal`, `nature`, `sketch`, `notebook`, `ink`, `sage` |
-| `avatar` | 否 | `avatars/avatar-01.png` 到 `avatars/avatar-10.png` |
+| `avatar` | 是 | `avatars/avatar-01.png` 到 `avatars/avatar-10.png` |
 | `homepage` | 否 | 个人主页链接（http/https 开头） |
 | `cheers` | 否 | 别人写给你的寄语数组，**自己不要往里面加内容** |
 
