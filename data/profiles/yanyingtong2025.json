@@ -14,5 +14,9 @@
   "style": "nature",
   "avatar": "avatars/avatar-01.png",
   "homepage": "",
-  "cheers": []
+  "cheers": 
+  {
+    "from": "YZ730",
+  "message": "你的 commit message 写得很清楚，加油！",
+  "ts": "2026-05-10"
 }
