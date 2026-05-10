@@ -10,5 +10,12 @@
   "city": "成都",
   "style": "nature",
   "avatar": "avatars/avatar-09.png",
-  "homepage": ""
+  "homepage": "",
+  "cheers": [
+    {
+      "from": "139502",
+      "message": "你的座右铭很有共鸣，一起加油！",
+      "ts": "2026-05-10"
+    }
+  ]
 }
