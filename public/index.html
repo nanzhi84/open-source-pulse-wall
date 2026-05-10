@@ -195,6 +195,10 @@ git push origin feat/your-name
         <fieldset class="avatar-options">
           <legend>头像 *</legend>
           <div id="avatarPicker"></div>
+          <label class="avatar-url-field">
+            自定义头像链接
+            <input id="inputAvatarUrl" name="avatarUrl" type="url" pattern="https://.*" inputmode="url" placeholder="https://example.com/avatar.png" />
+          </label>
         </fieldset>
         <button class="submit-card" id="copyJson" type="button">预览我的卡片</button>
       </form>

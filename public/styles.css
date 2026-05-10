@@ -715,6 +715,11 @@ legend {
   gap: 8px;
 }
 
+.avatar-options {
+  display: grid;
+  gap: 10px;
+}
+
 .style-options legend,
 .avatar-options legend { grid-column: 1 / -1; }
 
@@ -767,6 +772,15 @@ legend {
   border-color: var(--sage-dark);
   box-shadow: 0 0 0 3px rgba(96,122,100,.15);
   transform: rotate(-1deg);
+}
+
+.avatar-url-field {
+  margin-top: 2px;
+}
+
+.avatar-url-field input:invalid {
+  border-color: #b36b4a;
+  box-shadow: 0 0 0 3px rgba(179,107,74,.12);
 }
 
 .submit-card {

@@ -38,3 +38,33 @@ test('accepts http and https homepage URLs', () => {
     0
   );
 });
+
+test('accepts preset avatars and https avatar URLs', () => {
+  assert.equal(
+    validateProfile(validProfile({ avatar: 'avatars/avatar-01.png' }), 'safe-user.json').errors.length,
+    0
+  );
+  assert.equal(
+    validateProfile(validProfile({ avatar: 'https://example.com/avatar.png' }), 'safe-user.json').errors.length,
+    0
+  );
+});
+
+test('rejects unsafe avatar URLs', () => {
+  const httpResult = validateProfile(
+    validProfile({ avatar: 'http://example.com/avatar.png' }),
+    'safe-user.json'
+  );
+  const scriptResult = validateProfile(
+    validProfile({ avatar: 'javascript:alert(1)' }),
+    'safe-user.json'
+  );
+  const dataResult = validateProfile(
+    validProfile({ avatar: 'data:image/svg+xml,<svg></svg>' }),
+    'safe-user.json'
+  );
+
+  assert.match(httpResult.errors.join('\n'), /avatar/);
+  assert.match(scriptResult.errors.join('\n'), /avatar/);
+  assert.match(dataResult.errors.join('\n'), /avatar/);
+});

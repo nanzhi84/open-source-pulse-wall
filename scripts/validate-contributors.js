@@ -52,6 +52,18 @@ function isHttpUrl(value) {
   }
 }
 
+function isHttpsUrl(value) {
+  const trimmed = String(value || '').trim();
+  if (!trimmed) return false;
+
+  try {
+    const url = new URL(trimmed);
+    return url.protocol === 'https:';
+  } catch {
+    return false;
+  }
+}
+
 function requiredString(profile, key, label, errors, filename, maxLength = 80) {
   const value = profile[key];
   if (typeof value !== 'string' || value.trim().length === 0) {
@@ -161,8 +173,15 @@ function validateProfile(profile, filename) {
     errors.push(`${filename}: city 必须是 40 个字符以内的字符串`);
   }
 
-  if (profile.avatar !== undefined && !ALLOWED_AVATARS.has(profile.avatar)) {
-    errors.push(`${filename}: avatar 只能使用 ${Array.from(ALLOWED_AVATARS).join(', ')} 中的一个`);
+  if (profile.avatar !== undefined) {
+    if (typeof profile.avatar !== 'string') {
+      errors.push(`${filename}: avatar 必须是字符串`);
+    } else {
+      const avatar = profile.avatar.trim();
+      if (!ALLOWED_AVATARS.has(avatar) && !isHttpsUrl(avatar)) {
+        errors.push(`${filename}: avatar 只能使用 ${Array.from(ALLOWED_AVATARS).join(', ')} 中的一个，或 https:// 开头的图片 URL`);
+      }
+    }
   }
 
   if (profile.homepage !== undefined) {
@@ -250,6 +269,7 @@ module.exports = {
   validateProfile,
   validateGithubHandle,
   isHttpUrl,
+  isHttpsUrl,
   ALLOWED_STYLES,
   ALLOWED_AVATARS,
   CHEERS_MAX_PER_PROFILE,

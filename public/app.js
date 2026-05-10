@@ -38,6 +38,7 @@ const AVATARS = Array.from({ length: 11 }, (_, index) => {
   const number = String(index + 1).padStart(2, '0');
   return `avatars/avatar-${number}.png`;
 });
+const AVATAR_WARNING_FALLBACK = 'avatars/avatar-warning.svg';
 
 const styles = ['minimal', 'nature', 'sketch', 'notebook', 'ink', 'sage'];
 
@@ -109,7 +110,8 @@ const formFields = {
   role: $('#inputRole'),
   motto: $('#inputMotto'),
   stack: $('#inputStack'),
-  city: $('#inputCity')
+  city: $('#inputCity'),
+  avatarUrl: $('#inputAvatarUrl')
 };
 
 function htmlEscape(value) {
@@ -280,9 +282,23 @@ function safeHttpUrl(value) {
   }
 }
 
+function safeHttpsUrl(value) {
+  const trimmed = String(value || '').trim();
+  if (!trimmed) return '';
+
+  try {
+    const url = new URL(trimmed);
+    return url.protocol === 'https:' ? url.href : '';
+  } catch {
+    return '';
+  }
+}
+
 function avatarForProfile(profile) {
   const explicitAvatar = String(profile.avatar || '').trim();
   if (AVATARS.includes(explicitAvatar)) return explicitAvatar;
+  const avatarUrl = safeHttpsUrl(explicitAvatar);
+  if (avatarUrl) return avatarUrl;
 
   const seed = String(profile.github || profile.name || '').trim();
   if (!seed) return AVATARS[0];
@@ -380,7 +396,7 @@ function cardMarkup(profile, options = {}) {
     <article class="profile-card ${options.preview ? 'is-preview' : ''}" data-style="${htmlEscape(style)}">
       ${cheerBadge}
       <div class="profile-top">
-        <img class="avatar-image" src="${avatar}" alt="${name} 的头像" loading="lazy" />
+        <img class="avatar-image" src="${avatar}" alt="${name} 的头像" loading="lazy" data-fallback-src="${AVATAR_WARNING_FALLBACK}" />
         <div class="identity">
           <h3>${name}</h3>
           <a class="handle" href="${githubProfileUrl(profile.github || '')}" target="_blank" rel="noreferrer">@${github}</a>
@@ -1530,7 +1546,7 @@ function selectedStyle() {
 }
 
 function selectedAvatar() {
-  return $('input[name="avatar"]:checked')?.value || AVATARS[0];
+  return safeHttpsUrl(formFields.avatarUrl?.value) || $('input[name="avatar"]:checked')?.value || AVATARS[0];
 }
 
 function readBuilderProfile() {
@@ -1566,6 +1582,19 @@ function updateBuilder() {
 
   elements.profilePreview.innerHTML = cardMarkup(profileWithFile, { preview: true });
   elements.jsonPreview.textContent = json;
+}
+
+function bindAvatarFallback() {
+  document.addEventListener('error', (event) => {
+    const image = event.target;
+    if (!(image instanceof HTMLImageElement)) return;
+    if (!image.classList.contains('avatar-image')) return;
+    if (image.dataset.fallbackApplied === 'true') return;
+
+    image.dataset.fallbackApplied = 'true';
+    image.src = image.dataset.fallbackSrc || AVATAR_WARNING_FALLBACK;
+    image.alt = '头像外链不可用';
+  }, true);
 }
 
 async function copyText(text, message) {
@@ -1635,6 +1664,7 @@ function bindBuilder() {
   updateBuilder();
 }
 
+bindAvatarFallback();
 bindBuilder();
 bindActivityPanel();
 bindCheersOverlay();
