@@ -44,3 +44,6 @@ test-results/
 screenshots/
 output/playwright/
 .playwright-cli/
+
+# Local git worktrees
+.worktrees/
