@@ -34,7 +34,7 @@ const state = {
   lastHistoryPayload: null
 };
 
-const AVATARS = Array.from({ length: 10 }, (_, index) => {
+const AVATARS = Array.from({ length: 11 }, (_, index) => {
   const number = String(index + 1).padStart(2, '0');
   return `avatars/avatar-${number}.png`;
 });
