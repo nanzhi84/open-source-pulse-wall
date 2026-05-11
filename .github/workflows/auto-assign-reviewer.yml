@@ -1,12 +1,8 @@
 name: Auto-assign peer reviewer
 
-# Use pull_request_target so we get a write-permissions GITHUB_TOKEN even
-# for PRs opened from forks (which is the normal classroom setup). We do
-# NOT check out PR code, only the base branch's data/profiles directory,
-# so pull_request_target is safe here.
+# Keep this workflow disabled while automatic peer review assignment is paused.
 on:
-  pull_request_target:
-    types: [opened, ready_for_review, reopened]
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -16,7 +12,7 @@ permissions:
 jobs:
   pick-peer-reviewer:
     runs-on: ubuntu-latest
-    if: ${{ github.event.pull_request.draft == false }}
+    if: ${{ false }}
     steps:
       - name: Checkout base branch profiles
         uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
