@@ -25,3 +25,10 @@ test('profile cards fall back to a local warning avatar when avatar images fail'
   assert.match(script, /data-fallback-src/);
   assert.match(script, /addEventListener\('error'/);
 });
+
+test('avatar fallback is shared by card and drawer images', () => {
+  const script = fs.readFileSync(APP_PATH, 'utf8');
+
+  assert.match(script, /wall-drawer-row[\s\S]*data-fallback-src/);
+  assert.doesNotMatch(script, /classList\.contains\('avatar-image'\)/);
+});
