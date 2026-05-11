@@ -1755,12 +1755,12 @@ function bindAvatarFallback() {
   document.addEventListener('error', (event) => {
     const image = event.target;
     if (!(image instanceof HTMLImageElement)) return;
-    if (!image.classList.contains('avatar-image')) return;
+    if (!image.dataset.fallbackSrc) return;
     if (image.dataset.fallbackApplied === 'true') return;
 
     image.dataset.fallbackApplied = 'true';
     image.src = image.dataset.fallbackSrc || AVATAR_WARNING_FALLBACK;
-    image.alt = '头像外链不可用';
+    image.alt = '头像图片不可用';
   }, true);
 }
 
