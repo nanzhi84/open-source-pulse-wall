@@ -653,8 +653,8 @@ function drawerRowMarkup(profile) {
   const file = htmlEscape(filename);
   const sourceUrl = profileSourceUrl(filename);
   const sourceLink = sourceUrl
-    ? `<a class="wall-drawer-file" href="${htmlEscape(sourceUrl)}" target="_blank" rel="noreferrer">JSON</a>`
-    : '<span class="wall-drawer-file">JSON</span>';
+    ? `<a class="wall-drawer-source" href="${htmlEscape(sourceUrl)}" target="_blank" rel="noreferrer">JSON</a>`
+    : '<span class="wall-drawer-source">JSON</span>';
   const recent = Array.isArray(profile.cheers) && profile.cheers.length > 0
     ? `收到 ${profile.cheers.length} 条寄语`
     : '最近上墙';
@@ -665,12 +665,12 @@ function drawerRowMarkup(profile) {
         <strong>${name}</strong>
         <small>@${handle}</small>
       </span>
-      <span class="wall-drawer-recent">
+      <span class="wall-drawer-meta">
         <span class="wall-drawer-recent-text">${htmlEscape(recent)}</span>
         ${sourceLink}
       </span>
       <span class="wall-drawer-badge">${badge}</span>
-      <a href="${githubProfileUrl(profile.github || '')}" target="_blank" rel="noreferrer" aria-label="打开 ${handle} 的 GitHub">↗</a>
+      <a class="wall-drawer-profile-link" href="${githubProfileUrl(profile.github || '')}" target="_blank" rel="noreferrer" aria-label="打开 ${handle} 的 GitHub">↗</a>
     </li>
   `;
 }
