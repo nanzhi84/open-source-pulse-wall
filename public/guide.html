@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>添加 Profile 教学 | Open Source Pulse Wall</title>
+  <meta name="description" content="Open Source Pulse Wall 的 profile 添加与 Pull Request 教学页面。" />
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="paper-grain" aria-hidden="true"></div>
+  <svg class="edge-plant edge-plant-left" viewBox="0 0 160 360" aria-hidden="true">
+    <path d="M86 342 C78 286 84 230 66 184 C50 140 42 92 55 26" />
+    <path d="M69 226 C38 210 22 190 18 164 C45 168 64 186 69 226Z" />
+    <path d="M76 172 C108 152 124 128 126 95 C94 104 78 127 76 172Z" />
+    <path d="M61 118 C33 98 24 72 28 45 C54 55 66 80 61 118Z" />
+    <path d="M82 270 C112 254 132 232 137 202 C108 207 88 232 82 270Z" />
+  </svg>
+  <svg class="paper-plane" viewBox="0 0 260 220" aria-hidden="true">
+    <path class="plane-path" d="M28 160 C72 118 118 214 160 132 C188 80 214 72 238 88" />
+    <path class="plane" d="M184 54 L244 28 L218 92 L204 68 L184 54Z" />
+    <path class="plane-fold" d="M204 68 L244 28" />
+    <path class="plane-fold" d="M204 68 L214 104" />
+  </svg>
+
+  <main class="page-shell guide-page" id="top">
+    <header class="topbar guide-topbar">
+      <a class="brand" href="index.html" aria-label="返回 Open Source Pulse Wall 首页">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 48 48">
+            <circle cx="24" cy="24" r="20" />
+            <path d="M16 28 C18 18 26 14 36 12 C34 24 27 31 16 28Z" />
+            <path d="M17 28 C23 25 28 21 33 15" />
+            <path d="M18 31 C16 25 14 20 10 16" />
+          </svg>
+        </span>
+        <span>
+          <strong>Open Source Pulse Wall</strong>
+          <small>Profile 贡献教学</small>
+        </span>
+      </a>
+      <nav class="topnav" aria-label="教学页导航">
+        <a href="index.html#wall">贡献者大厅</a>
+        <a href="index.html#board">PR 与讨论</a>
+        <a href="#profile" class="active">添加 Profile</a>
+        <a href="#pr-flow">提交 PR</a>
+      </nav>
+      <a class="guide-back" href="index.html">返回展示墙</a>
+    </header>
+
+    <section class="guide-hero">
+      <div>
+        <h1>添加你的 Profile</h1>
+        <p>这一页把 README 里的贡献流程拆成课堂步骤。你只需要跟着做：Fork 仓库，复制模板，填写 JSON，运行校验，提交 Pull Request。页面里的截图来自公开 GitHub 页面和 GitHub 官方文档，登录后的界面可能有轻微差异，但按钮位置和流程一致。</p>
+      </div>
+      <aside class="guide-checklist" aria-label="完成标准">
+        <h2>完成标准</h2>
+        <ul>
+          <li>新建了自己的分支。</li>
+          <li>添加了 `data/profiles/你的用户名.json`。</li>
+          <li>`npm run validate` 通过。</li>
+          <li>Pull Request 指向老师仓库的 `main` 分支。</li>
+        </ul>
+      </aside>
+    </section>
+
+    <div class="guide-layout">
+      <aside class="guide-toc" aria-label="教学目录">
+        <strong>课堂步骤</strong>
+        <a href="#prepare">1. 准备仓库</a>
+        <a href="#branch">2. 创建分支</a>
+        <a href="#profile">3. 添加 Profile</a>
+        <a href="#fields">4. 填写字段</a>
+        <a href="#validate">5. 本地校验</a>
+        <a href="#pr-flow">6. 提交 PR</a>
+        <a href="#review">7. 等待 Review</a>
+        <a href="#mistakes">8. 常见错误</a>
+      </aside>
+
+      <div class="guide-content">
+        <section class="guide-step-card" id="prepare">
+          <div class="guide-step-head">
+            <span>1</span>
+            <div>
+              <h2>准备仓库</h2>
+              <p>先在 GitHub 上 Fork 老师的仓库，再把自己的 Fork 克隆到本地。Fork 的意思是把课堂仓库复制一份到你的账号下，你后面的提交先进入自己的仓库。</p>
+            </div>
+          </div>
+          <pre><code>git clone https://github.com/your-github-id/open-source-pulse-wall.git
+cd open-source-pulse-wall
+git remote add upstream https://github.com/nanzhi84/open-source-pulse-wall.git</code></pre>
+          <figure class="guide-shot">
+            <img src="guide-assets/01-repo-home.png" alt="GitHub 仓库首页截图，顶部有 Fork 和 Code 按钮。" loading="lazy" />
+            <figcaption>仓库首页：先点 Fork。Clone 时点绿色 Code 按钮，复制自己 Fork 的地址。</figcaption>
+          </figure>
+        </section>
+
+        <section class="guide-step-card" id="branch">
+          <div class="guide-step-head">
+            <span>2</span>
+            <div>
+              <h2>创建自己的分支</h2>
+              <p>不要直接在 `main` 上改。每个人都从自己的分支开始，这样老师和同学能清楚看到你改了什么，也方便开 Pull Request。</p>
+            </div>
+          </div>
+          <pre><code>git checkout -b add-your-profile</code></pre>
+          <p class="guide-note">分支名可以换成 `feat/your-name-profile`，只要意思清楚即可。</p>
+          <figure class="guide-shot">
+            <img src="guide-assets/04-contributing-docs.png" alt="GitHub 官方贡献项目文档截图。" loading="lazy" />
+            <figcaption>GitHub 官方文档也建议通过 fork、branch、pull request 参与项目。</figcaption>
+          </figure>
+        </section>
+
+        <section class="guide-step-card" id="profile">
+          <div class="guide-step-head">
+            <span>3</span>
+            <div>
+              <h2>添加 Profile 文件</h2>
+              <p>复制模板文件，文件名改成你的 GitHub 用户名。比如你的 GitHub 用户名是 `octocat`，文件就应该是 `data/profiles/octocat.json`。</p>
+            </div>
+          </div>
+          <pre><code>cp data/profiles/_template.json data/profiles/your-github-id.json</code></pre>
+          <div class="guide-two-shots">
+            <figure class="guide-shot">
+              <img src="guide-assets/02-profile-directory.png" alt="data/profiles 目录截图。" loading="lazy" />
+              <figcaption>`data/profiles` 目录里放每位同学的 profile JSON。</figcaption>
+            </figure>
+            <figure class="guide-shot">
+              <img src="guide-assets/03-profile-template.png" alt="_template.json 文件截图。" loading="lazy" />
+              <figcaption>`_template.json` 是模板。复制它，不要直接改模板本身。</figcaption>
+            </figure>
+          </div>
+        </section>
+
+        <section class="guide-step-card" id="fields">
+          <div class="guide-step-head">
+            <span>4</span>
+            <div>
+              <h2>填写字段</h2>
+              <p>打开你复制出来的 JSON 文件，只改自己的内容。JSON 要保留英文双引号、冒号、逗号和方括号。</p>
+            </div>
+          </div>
+          <pre><code>{
+  "name": "你的名字",
+  "github": "your-github-id",
+  "role": "First-time contributor",
+  "motto": "今天完成我的第一个开源 PR",
+  "stack": ["Git", "Open Source"],
+  "city": "Beijing",
+  "style": "nature",
+  "avatar": "avatars/avatar-01.png",
+  "homepage": "",
+  "cheers": []
+}</code></pre>
+          <div class="guide-field-grid">
+            <article><h3>`name`</h3><p>你的名字或昵称。</p></article>
+            <article><h3>`github`</h3><p>你的 GitHub 用户名，建议和文件名一致。</p></article>
+            <article><h3>`role`</h3><p>你的身份，例如 `First-time contributor`、`学生`。</p></article>
+            <article><h3>`motto`</h3><p>一句话介绍自己，页面会展示。</p></article>
+            <article><h3>`stack`</h3><p>技术标签数组，最多 5 个。</p></article>
+            <article><h3>`city`</h3><p>城市或课堂位置，可以写中文。</p></article>
+            <article><h3>`style`</h3><p>卡片风格：`minimal`、`nature`、`sketch`、`notebook`、`ink`、`sage`。</p></article>
+            <article><h3>`avatar`</h3><p>头像路径，例如 `avatars/avatar-01.png`，也可以用 https 图片链接。</p></article>
+            <article><h3>`homepage`</h3><p>个人主页，可留空。</p></article>
+            <article><h3>`cheers`</h3><p>先保持空数组。这个字段留给其他同学给你写寄语。</p></article>
+          </div>
+        </section>
+
+        <section class="guide-step-card" id="validate">
+          <div class="guide-step-head">
+            <span>5</span>
+            <div>
+              <h2>运行本地校验</h2>
+              <p>提交前先运行校验。校验通过，说明 JSON 格式和字段规则基本没问题。校验失败时，先看终端里指出的文件名和字段名。</p>
+            </div>
+          </div>
+          <pre><code>npm run validate</code></pre>
+          <p class="guide-note">这个仓库不需要安装额外依赖。只要本机有 Node.js 18 或更高版本，就可以直接运行。</p>
+          <figure class="guide-shot">
+            <img src="guide-assets/05-add-file-docs.png" alt="GitHub 官方添加文件文档截图。" loading="lazy" />
+            <figcaption>如果你临时没有本地环境，也可以参考 GitHub 官方文档在网页端添加文件；课堂推荐先按 README 的本地命令流程练习。</figcaption>
+          </figure>
+        </section>
+
+        <section class="guide-step-card" id="pr-flow">
+          <div class="guide-step-head">
+            <span>6</span>
+            <div>
+              <h2>提交 Commit、Push、开 PR</h2>
+              <p>校验通过后，把你的 profile 文件提交到自己的分支，再推送到 GitHub。随后打开 GitHub 页面创建 Pull Request。</p>
+            </div>
+          </div>
+          <pre><code>git add data/profiles/your-github-id.json
+git commit -m "feat: add my profile"
+git push origin add-your-profile</code></pre>
+          <p>回到 GitHub，通常会看到 `Compare & pull request`。如果没有看到，进入 Pull requests 页面，点击 New pull request，再选择你的分支。</p>
+          <figure class="guide-shot">
+            <img src="guide-assets/06-compare-page.png" alt="GitHub Compare changes 页面截图。" loading="lazy" />
+            <figcaption>创建 PR 时检查 base 是老师仓库的 `main`，compare 是你自己的分支。</figcaption>
+          </figure>
+          <figure class="guide-shot">
+            <img src="guide-assets/07-pulls-page.png" alt="GitHub Pull requests 页面截图。" loading="lazy" />
+            <figcaption>如果没有自动提示，就从 Pull requests 页面进入 New pull request。</figcaption>
+          </figure>
+        </section>
+
+        <section class="guide-step-card" id="review">
+          <div class="guide-step-head">
+            <span>7</span>
+            <div>
+              <h2>等待 Review 和上墙</h2>
+              <p>PR 发出后，GitHub Actions 会自动跑校验，老师或同学会 review。需要修改时，继续在同一个分支提交，PR 会自动更新。合并后，你的卡片会出现在展示墙。</p>
+            </div>
+          </div>
+          <ul class="guide-clean-list">
+            <li>看到检查失败：点进失败详情，按报错改 JSON。</li>
+            <li>收到 review 评论：改完后再次提交并 push。</li>
+            <li>PR 合并后：回到展示墙，等待老师端同步刷新。</li>
+          </ul>
+          <figure class="guide-shot">
+            <img src="guide-assets/08-review-docs.png" alt="GitHub 官方 Pull Request review 文档截图。" loading="lazy" />
+            <figcaption>Review 是开源协作的一部分。这个课堂项目会让你练习发 PR，也练习看别人的 PR。</figcaption>
+          </figure>
+        </section>
+
+        <section class="guide-step-card" id="mistakes">
+          <div class="guide-step-head">
+            <span>8</span>
+            <div>
+              <h2>常见错误</h2>
+              <p>遇到问题先检查下面几项。仍然解决不了，就用仓库里的 `Question` Issue 模板提问。</p>
+            </div>
+          </div>
+          <div class="guide-mistakes">
+            <article>
+              <h3>JSON 最后一项多了逗号</h3>
+              <p>JSON 对逗号很严格。最后一个字段后面不要写逗号。</p>
+            </article>
+            <article>
+              <h3>文件名不是 GitHub 用户名</h3>
+              <p>文件名建议使用小写 GitHub 用户名，例如 `octocat.json`。</p>
+            </article>
+            <article>
+              <h3>改到了 `_template.json`</h3>
+              <p>模板只用来复制。你的内容应该写在自己的新文件里。</p>
+            </article>
+            <article>
+              <h3>PR 目标分支选错</h3>
+              <p>base 应该是老师仓库的 `main`，不是你自己 fork 的 `main`。</p>
+            </article>
+            <article>
+              <h3>没有先运行校验</h3>
+              <p>提交前运行 `npm run validate`，能提前发现大多数格式问题。</p>
+            </article>
+            <article>
+              <h3>自己填写了 `cheers`</h3>
+              <p>第一次添加 profile 时保持 `cheers: []`。寄语留给同学来写。</p>
+            </article>
+          </div>
+          <div class="guide-next-actions">
+            <a href="index.html#wall">回到展示墙</a>
+            <a href="https://github.com/nanzhi84/open-source-pulse-wall/issues/new/choose" target="_blank" rel="noreferrer">去 GitHub 提问</a>
+          </div>
+        </section>
+      </div>
+    </div>
+  </main>
+</body>
+</html>

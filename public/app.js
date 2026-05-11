@@ -1,7 +1,8 @@
 const MAX_FEED_ITEMS = 30;
-const VISIBLE_FEED_ITEMS = 5;
-const WALL_PREVIEW_LIMIT = 10;
+const VISIBLE_FEED_ITEMS = 6;
+const WALL_PREVIEW_LIMIT = 6;
 const WALL_PAGE_SIZE = 20;
+const WALL_DRAWER_PAGE_SIZE = 20;
 
 const GRAPH_ROW_HEIGHT = 56;
 const GRAPH_LANE_WIDTH = 22;
@@ -10,7 +11,7 @@ const GRAPH_PADDING_TOP = 16;
 const GRAPH_PADDING_LEFT = 18;
 const GRAPH_PALETTE = ['#3b6064', '#a36a3b', '#5b8a3a', '#8a3b6a', '#3b6a8a', '#6a8a3b', '#8a5b3b'];
 const REFRESH_LABEL_DEFAULT = '立即拉取';
-const HISTORY_PREVIEW_LIMIT = 8;
+const HISTORY_PREVIEW_LIMIT = 6;
 
 const state = {
   knownHandles: new Set(),
@@ -23,9 +24,14 @@ const state = {
   dataMode: '',
   activityReturnFocus: null,
   cheersReturnFocus: null,
+  wallDrawerReturnFocus: null,
   wallContributors: [],
   wallExpanded: false,
   wallVisibleCount: WALL_PREVIEW_LIMIT,
+  wallDrawerVisibleCount: WALL_DRAWER_PAGE_SIZE,
+  wallDrawerFilter: 'all',
+  githubHtmlUrl: '',
+  githubDefaultBranch: 'main',
   refreshing: false,
   refreshCooldownTimer: null,
   knownCommitShas: new Set(),
@@ -63,13 +69,6 @@ const elements = {
   liveFeed: $('#liveFeed'),
   wall: $('#contributorsWall'),
   toast: $('#toast'),
-  profilePreview: $('#profilePreview'),
-  jsonPreview: $('#jsonPreview'),
-  copyJson: $('#copyJson'),
-  copyFilename: $('#copyFilename'),
-  copyCloneCommand: $('#copyCloneCommand'),
-  terminalCommands: $('#terminalCommands'),
-  avatarPicker: $('#avatarPicker'),
   viewAllFeed: $('#viewAllFeed'),
   activityOverlay: $('#activityOverlay'),
   activityPanel: $('#activityPanel'),
@@ -89,6 +88,15 @@ const elements = {
   wallFilterStatus: $('#wallFilterStatus'),
   clearWallSearch: $('#clearWallSearch'),
   loadMoreWall: $('#loadMoreWall'),
+  wallDrawerOverlay: $('#wallDrawerOverlay'),
+  wallDrawer: $('#wallDrawer'),
+  closeWallDrawer: $('#closeWallDrawer'),
+  wallDrawerSearch: $('#wallDrawerSearch'),
+  wallDrawerSort: $('#wallDrawerSort'),
+  wallDrawerList: $('#wallDrawerList'),
+  wallDrawerCount: $('#wallDrawerCount'),
+  wallDrawerPageNote: $('#wallDrawerPageNote'),
+  wallDrawerLoadMore: $('#wallDrawerLoadMore'),
   gitGraph: $('#gitGraph'),
   historySummary: $('#historySummary'),
   historyCount: $('#historyCount'),
@@ -101,17 +109,13 @@ const elements = {
   issuesList: $('#issuesList'),
   pullsList: $('#pullsList'),
   openIssuesLink: $('#openIssuesLink'),
-  openPullsLink: $('#openPullsLink')
-};
-
-const formFields = {
-  name: $('#inputName'),
-  github: $('#inputGithub'),
-  role: $('#inputRole'),
-  motto: $('#inputMotto'),
-  stack: $('#inputStack'),
-  city: $('#inputCity'),
-  avatarUrl: $('#inputAvatarUrl')
+  openPullsLink: $('#openPullsLink'),
+  communityQuestionsList: $('#communityQuestionsList'),
+  communityIdeasList: $('#communityIdeasList'),
+  communityBugsList: $('#communityBugsList'),
+  openQuestionsLink: $('#openQuestionsLink'),
+  openIdeasLink: $('#openIdeasLink'),
+  openBugsLink: $('#openBugsLink')
 };
 
 function htmlEscape(value) {
@@ -226,31 +230,10 @@ function setConnection(status, text) {
   elements.connectionText.textContent = text;
 }
 
-function updateCloneCommand(github) {
-  if (!elements.terminalCommands) return;
-
-  const cloneUrl = github?.cloneUrl || '<GitHub 仓库地址>';
-  elements.terminalCommands.textContent = `# 1. Fork 本仓库
-git clone ${cloneUrl}
-
-# 2. 创建你的分支
-git checkout -b feat/your-name
-
-# 3. 添加你的个人信息
-cp data/profiles/_template.json data/profiles/your-github-id.json
-# 编辑该 JSON；也可用本页上方表单生成内容后写入同名文件
-npm run validate
-
-# 4. 提交并推送
-git add .
-git commit -m "feat: add my profile"
-git push origin feat/your-name
-
-# 5. 创建 Pull Request
-# 到 main 分支，等待 Review & Merge`;
-}
-
 function updateGithubSync(github) {
+  state.githubHtmlUrl = safeHttpUrl(github?.htmlUrl || '') || '';
+  state.githubDefaultBranch = String(github?.defaultBranch || 'main').trim() || 'main';
+
   const isSynced = Boolean(github?.ok);
 
   if (elements.starCount) {
@@ -263,11 +246,18 @@ function updateGithubSync(github) {
       : (github?.message || '等待 GitHub 同步配置');
   }
 
-  updateCloneCommand(github);
 }
 
 function githubProfileUrl(github) {
   return `https://github.com/${encodeURIComponent(github || '')}`;
+}
+
+function profileSourceUrl(file) {
+  const filename = String(file || '').trim();
+  if (!state.githubHtmlUrl || !/^[A-Za-z0-9_.-]+\.json$/.test(filename)) return '';
+
+  const branch = encodeURIComponent(state.githubDefaultBranch || 'main');
+  return `${state.githubHtmlUrl}/blob/${branch}/data/profiles/${encodeURIComponent(filename)}`;
 }
 
 function safeHttpUrl(value) {
@@ -307,17 +297,6 @@ function avatarForProfile(profile) {
   return AVATARS[sum % AVATARS.length];
 }
 
-function landscapeMarkup() {
-  return `
-    <svg class="profile-landscape" viewBox="0 0 220 70" aria-hidden="true">
-      <path d="M6 60 C34 40 48 42 72 26 C91 13 110 24 124 42 C142 28 156 18 177 30 C188 36 198 47 214 50" />
-      <path d="M20 60 L20 45 M16 49 L20 42 L24 49 M32 60 L32 42 M27 48 L32 36 L37 48" />
-      <path d="M168 60 L168 44 M163 50 L168 38 L173 50 M184 60 L184 47 M179 52 L184 42 L189 52" />
-      <path d="M0 61 H220" />
-    </svg>
-  `;
-}
-
 function cheersMarkup(profile, options = {}) {
   const cheers = Array.isArray(profile.cheers) ? profile.cheers : [];
   if (!cheers.length) {
@@ -333,12 +312,12 @@ function cheersMarkup(profile, options = {}) {
   }
 
   const ordered = cheers.slice().reverse();
-  const previewItems = ordered.slice(0, options.preview ? 4 : 2);
-  const moreCount = ordered.length - previewItems.length;
   const handle = String(profile.github || profile.name || '').trim();
   const triggerAttr = !options.preview && handle
     ? ` data-cheers-trigger="${htmlEscape(handle)}"`
     : '';
+  const previewItems = ordered.slice(0, options.preview ? 4 : 1);
+  const moreCount = ordered.length - previewItems.length;
   const items = previewItems
     .map((cheer) => `
       <li>
@@ -378,7 +357,12 @@ function cardMarkup(profile, options = {}) {
   const tags = stack.length
     ? stack.map((tag) => `<span>${htmlEscape(tag)}</span>`).join('')
     : '<span>Git</span><span>Open Source</span>';
-  const file = htmlEscape(profile.file || `${String(profile.github || 'your-github-id').toLowerCase()}.json`);
+  const filename = profile.file || `${String(profile.github || 'your-github-id').toLowerCase()}.json`;
+  const file = htmlEscape(filename);
+  const sourceUrl = profileSourceUrl(filename);
+  const sourceLink = sourceUrl
+    ? `<a href="${htmlEscape(sourceUrl)}" target="_blank" rel="noreferrer" aria-label="查看 ${file} 的完整 JSON">${file}</a>`
+    : `<span>${file}</span>`;
   const homepage = safeHttpUrl(profile.homepage) || (profile.github ? githubProfileUrl(profile.github) : '');
   const footerLink = homepage
     ? `<a href="${htmlEscape(homepage)}" target="_blank" rel="noreferrer">GitHub</a>`
@@ -393,7 +377,7 @@ function cardMarkup(profile, options = {}) {
     : '';
 
   return `
-    <article class="profile-card ${options.preview ? 'is-preview' : ''}" data-style="${htmlEscape(style)}">
+    <article class="profile-card" data-style="${htmlEscape(style)}">
       ${cheerBadge}
       <div class="profile-top">
         <img class="avatar-image" src="${avatar}" alt="${name} 的头像" loading="lazy" data-fallback-src="${AVATAR_WARNING_FALLBACK}" />
@@ -409,10 +393,9 @@ function cardMarkup(profile, options = {}) {
         <span>${city}</span>
       </div>
       <div class="profile-tags">${tags}</div>
-      ${cheersMarkup(profile, options)}
-      ${options.preview ? landscapeMarkup() : ''}
+      ${options.compact ? '' : cheersMarkup(profile, options)}
       <div class="profile-footer">
-        <span>${file}</span>
+        ${sourceLink}
         ${footerLink}
       </div>
     </article>
@@ -609,7 +592,7 @@ function renderWall() {
   }
 
   elements.wall.innerHTML = visible
-    .map((profile) => cardMarkup(profile))
+    .map((profile) => cardMarkup(profile, { compact: true }))
     .join('');
 }
 
@@ -619,6 +602,106 @@ function updateWall(payload) {
   state.wallContributors = sortContributors(payload.contributors || []);
   if (!state.wallExpanded) state.wallVisibleCount = WALL_PREVIEW_LIMIT;
   renderWall();
+  renderWallDrawer();
+}
+
+function currentWallDrawerQuery() {
+  return String(elements.wallDrawerSearch?.value || '').trim().toLowerCase();
+}
+
+function profileBadgeText(profile) {
+  const role = String(profile.role || '').trim();
+  if (/review/i.test(role)) return 'Review';
+  if (/discussion|话题|交流/i.test(role)) return 'Discussion';
+  if (/first|new|新人/i.test(role)) return '新人';
+  if (Array.isArray(profile.cheers) && profile.cheers.length > 0) return '活跃';
+  return role || '开源贡献者';
+}
+
+function filteredWallDrawerContributors() {
+  const query = currentWallDrawerQuery();
+  const filter = state.wallDrawerFilter;
+
+  return state.wallContributors.filter((profile) => {
+    const badge = profileBadgeText(profile).toLowerCase();
+    const text = wallSearchText(profile);
+    const matchesQuery = !query || text.includes(query);
+    if (!matchesQuery) return false;
+    if (filter === 'new') return badge.includes('新人') || badge.includes('first');
+    if (filter === 'active') return badge.includes('活跃') || (Array.isArray(profile.cheers) && profile.cheers.length > 0);
+    if (filter === 'review') return badge.includes('review');
+    if (filter === 'discussion') return badge.includes('discussion') || badge.includes('话题');
+    return true;
+  });
+}
+
+function sortWallDrawerContributors(contributors) {
+  const mode = elements.wallDrawerSort?.value || 'recent';
+  const sorted = contributors.slice();
+  if (mode === 'handle') {
+    return sorted.sort((a, b) => String(a.github || a.name).localeCompare(String(b.github || b.name)));
+  }
+  return sorted;
+}
+
+function drawerRowMarkup(profile) {
+  const handle = htmlEscape(profile.github || profile.name || 'unknown');
+  const name = htmlEscape(profile.name || profile.github || 'Anonymous');
+  const avatar = htmlEscape(avatarForProfile(profile));
+  const badge = htmlEscape(profileBadgeText(profile));
+  const filename = profile.file || `${String(profile.github || 'your-github-id').toLowerCase()}.json`;
+  const file = htmlEscape(filename);
+  const sourceUrl = profileSourceUrl(filename);
+  const sourceLink = sourceUrl
+    ? `<a class="wall-drawer-file" href="${htmlEscape(sourceUrl)}" target="_blank" rel="noreferrer">JSON</a>`
+    : '<span class="wall-drawer-file">JSON</span>';
+  const recent = Array.isArray(profile.cheers) && profile.cheers.length > 0
+    ? `收到 ${profile.cheers.length} 条寄语`
+    : '最近上墙';
+  return `
+    <li class="wall-drawer-row">
+      <img src="${avatar}" alt="${name} 的头像" loading="lazy" data-fallback-src="${AVATAR_WARNING_FALLBACK}" />
+      <span class="wall-drawer-person">
+        <strong>${name}</strong>
+        <small>@${handle}</small>
+      </span>
+      <span class="wall-drawer-recent">
+        <span class="wall-drawer-recent-text">${htmlEscape(recent)}</span>
+        ${sourceLink}
+      </span>
+      <span class="wall-drawer-badge">${badge}</span>
+      <a href="${githubProfileUrl(profile.github || '')}" target="_blank" rel="noreferrer" aria-label="打开 ${handle} 的 GitHub">↗</a>
+    </li>
+  `;
+}
+
+function renderWallDrawer() {
+  if (!elements.wallDrawerList) return;
+
+  const filtered = sortWallDrawerContributors(filteredWallDrawerContributors());
+  const visible = filtered.slice(0, state.wallDrawerVisibleCount);
+  const total = state.wallContributors.length;
+  const hasMore = filtered.length > visible.length;
+
+  if (elements.wallDrawerCount) {
+    elements.wallDrawerCount.textContent = total
+      ? `共 ${total} 位贡献者 · 当前显示 ${visible.length} / ${filtered.length}`
+      : '等待贡献者数据';
+  }
+
+  if (elements.wallDrawerPageNote) {
+    elements.wallDrawerPageNote.textContent = hasMore
+      ? `还有 ${filtered.length - visible.length} 位可加载`
+      : '已显示当前筛选结果';
+  }
+
+  if (elements.wallDrawerLoadMore) {
+    elements.wallDrawerLoadMore.hidden = !hasMore;
+  }
+
+  elements.wallDrawerList.innerHTML = visible.length
+    ? visible.map(drawerRowMarkup).join('')
+    : '<li class="wall-drawer-empty">没有匹配的贡献者。</li>';
 }
 
 function detectNewContributors(payload) {
@@ -1175,6 +1258,56 @@ function pullRowMarkup(pr) {
   `;
 }
 
+function communityItemMarkup(item) {
+  const link = safeHttpUrl(item.htmlUrl || '');
+  const target = link ? ' target="_blank" rel="noreferrer"' : '';
+  const title = htmlEscape(item.title || 'Untitled');
+  const meta = [
+    item.commentCount ? `${formatNumber(item.commentCount)} 条评论` : '',
+    formatRelativeTime(item.updatedAt)
+  ].filter(Boolean).join(' · ');
+  return `
+    <li class="community-item">
+      <a href="${htmlEscape(link || '#')}"${target}>
+        <span>${title}</span>
+        <small>${htmlEscape(meta || 'GitHub issue')}</small>
+      </a>
+    </li>
+  `;
+}
+
+function renderCommunityLane(listElement, items, emptyText) {
+  if (!listElement) return;
+  listElement.innerHTML = items.length
+    ? items.map(communityItemMarkup).join('')
+    : `<li class="community-empty">${htmlEscape(emptyText)}</li>`;
+}
+
+function setCommunityLink(element, href) {
+  if (!element) return;
+  if (!href) {
+    element.hidden = true;
+    return;
+  }
+  element.hidden = false;
+  element.href = href;
+}
+
+function updateCommunityLanes(github) {
+  const lanes = github.communityLanes || {};
+  const configured = Boolean(github.configured);
+  const emptyText = configured ? '暂无真实条目' : '连接 GitHub 后显示真实数据';
+
+  renderCommunityLane(elements.communityQuestionsList, Array.isArray(lanes.questions) ? lanes.questions : [], emptyText);
+  renderCommunityLane(elements.communityIdeasList, Array.isArray(lanes.ideas) ? lanes.ideas : [], emptyText);
+  renderCommunityLane(elements.communityBugsList, Array.isArray(lanes.bugs) ? lanes.bugs : [], emptyText);
+
+  const base = github.htmlUrl || '';
+  setCommunityLink(elements.openQuestionsLink, base ? `${base}/issues?q=is%3Aissue%20label%3Aquestion` : '');
+  setCommunityLink(elements.openIdeasLink, base ? `${base}/issues?q=is%3Aissue%20label%3Aenhancement` : '');
+  setCommunityLink(elements.openBugsLink, base ? `${base}/issues?q=is%3Aissue%20label%3Abug` : '');
+}
+
 function updateBoardSection(payload) {
   const github = payload.github || {};
   const issues = Array.isArray(github.issues) ? github.issues : [];
@@ -1240,6 +1373,8 @@ function updateBoardSection(payload) {
       elements.pullsList.innerHTML = warnings + pullRequests.map(pullRowMarkup).join('');
     }
   }
+
+  updateCommunityLanes(github);
 }
 
 function applyState(payload) {
@@ -1508,10 +1643,43 @@ function setWallExpanded(expanded) {
   }
 }
 
+function openWallDrawer() {
+  if (!elements.wallDrawerOverlay || !elements.wallDrawer) {
+    setWallExpanded(true);
+    return;
+  }
+
+  state.wallDrawerReturnFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+  state.wallDrawerVisibleCount = WALL_DRAWER_PAGE_SIZE;
+  renderWallDrawer();
+  elements.wallDrawerOverlay.hidden = false;
+  elements.wallDrawer.focus();
+  if (elements.toggleWallMode) elements.toggleWallMode.setAttribute('aria-expanded', 'true');
+}
+
+function closeWallDrawer(options = {}) {
+  if (!elements.wallDrawerOverlay) return;
+  elements.wallDrawerOverlay.hidden = true;
+  if (elements.toggleWallMode) elements.toggleWallMode.setAttribute('aria-expanded', 'false');
+  if (!options.keepHash && window.location.hash === '#all-contributors') {
+    window.history.replaceState(null, '', `${window.location.pathname}${window.location.search}`);
+  }
+  if (state.wallDrawerReturnFocus) {
+    state.wallDrawerReturnFocus.focus();
+  }
+}
+
+function syncWallDrawerFromHash() {
+  if (window.location.hash === '#all-contributors') {
+    openWallDrawer();
+  }
+}
+
 function bindWallControls() {
   if (elements.toggleWallMode) {
     elements.toggleWallMode.addEventListener('click', () => {
-      setWallExpanded(!state.wallExpanded);
+      window.history.replaceState(null, '', '#all-contributors');
+      openWallDrawer();
     });
   }
 
@@ -1539,49 +1707,48 @@ function bindWallControls() {
       renderWall();
     });
   }
-}
 
-function selectedStyle() {
-  return $('input[name="style"]:checked')?.value || 'nature';
-}
+  if (elements.closeWallDrawer) {
+    elements.closeWallDrawer.addEventListener('click', closeWallDrawer);
+  }
 
-function selectedAvatar() {
-  return safeHttpsUrl(formFields.avatarUrl?.value) || $('input[name="avatar"]:checked')?.value || AVATARS[0];
-}
+  if (elements.wallDrawerOverlay) {
+    elements.wallDrawerOverlay.addEventListener('click', (event) => {
+      if (event.target === elements.wallDrawerOverlay) closeWallDrawer();
+    });
+  }
 
-function readBuilderProfile() {
-  const stack = formFields.stack.value
-    .split(',')
-    .map((item) => item.trim())
-    .filter(Boolean)
-    .slice(0, 5);
+  if (elements.wallDrawerSearch) {
+    elements.wallDrawerSearch.addEventListener('input', () => {
+      state.wallDrawerVisibleCount = WALL_DRAWER_PAGE_SIZE;
+      renderWallDrawer();
+    });
+  }
 
-  return {
-    name: formFields.name.value.trim() || 'New Contributor',
-    github: formFields.github.value.trim() || 'your-github-id',
-    role: formFields.role.value.trim() || 'First-time contributor',
-    motto: formFields.motto.value.trim() || '今天完成我的第一个开源 PR',
-    stack: stack.length ? stack : ['Git', 'Open Source'],
-    city: formFields.city.value.trim() || 'Classroom',
-    style: selectedStyle(),
-    avatar: selectedAvatar(),
-    homepage: ''
-  };
-}
+  if (elements.wallDrawerSort) {
+    elements.wallDrawerSort.addEventListener('change', renderWallDrawer);
+  }
 
-function filenameFor(profile) {
-  return `${String(profile.github || 'your-github-id').trim().toLowerCase()}.json`;
-}
+  if (elements.wallDrawerLoadMore) {
+    elements.wallDrawerLoadMore.addEventListener('click', () => {
+      state.wallDrawerVisibleCount += WALL_DRAWER_PAGE_SIZE;
+      renderWallDrawer();
+    });
+  }
 
-function updateBuilder() {
-  if (!elements.profilePreview || !elements.jsonPreview) return;
+  $$('.wall-drawer-filters button').forEach((button) => {
+    button.addEventListener('click', () => {
+      state.wallDrawerFilter = button.dataset.drawerFilter || 'all';
+      $$('.wall-drawer-filters button').forEach((item) => {
+        item.classList.toggle('is-active', item === button);
+      });
+      state.wallDrawerVisibleCount = WALL_DRAWER_PAGE_SIZE;
+      renderWallDrawer();
+    });
+  });
 
-  const profile = readBuilderProfile();
-  const profileWithFile = { ...profile, file: filenameFor(profile) };
-  const json = JSON.stringify(profile, null, 2);
-
-  elements.profilePreview.innerHTML = cardMarkup(profileWithFile, { preview: true });
-  elements.jsonPreview.textContent = json;
+  window.addEventListener('hashchange', syncWallDrawerFromHash);
+  syncWallDrawerFromHash();
 }
 
 function bindAvatarFallback() {
@@ -1597,75 +1764,7 @@ function bindAvatarFallback() {
   }, true);
 }
 
-async function copyText(text, message) {
-  try {
-    await navigator.clipboard.writeText(text);
-    toast(message);
-  } catch {
-    toast('复制失败，请手动选择文本复制');
-  }
-}
-
-function renderAvatarPicker() {
-  if (!elements.avatarPicker) return;
-
-  elements.avatarPicker.innerHTML = AVATARS.map((avatar, index) => `
-    <label class="avatar-choice" title="头像 ${index + 1}">
-      <input type="radio" name="avatar" value="${avatar}" ${index === 0 ? 'checked' : ''} />
-      <img src="${avatar}" alt="头像 ${index + 1}" />
-    </label>
-  `).join('');
-}
-
-function bindBuilder() {
-  renderAvatarPicker();
-
-  Object.values(formFields).forEach((field) => {
-    if (!field) return;
-    field.addEventListener('input', updateBuilder);
-    field.addEventListener('change', updateBuilder);
-  });
-
-  $$('input[name="style"]').forEach((field) => {
-    field.addEventListener('change', updateBuilder);
-  });
-
-  if (elements.avatarPicker) {
-    elements.avatarPicker.addEventListener('change', updateBuilder);
-  }
-
-  if (elements.copyJson) {
-    elements.copyJson.addEventListener('click', () => {
-      updateBuilder();
-      copyText(elements.jsonPreview.textContent, '已复制 JSON');
-    });
-  }
-
-  if (elements.copyFilename) {
-    elements.copyFilename.addEventListener('click', () => {
-      copyText(filenameFor(readBuilderProfile()), '已复制文件名');
-    });
-  }
-
-  if (elements.copyCloneCommand) {
-    elements.copyCloneCommand.addEventListener('click', () => {
-      copyText(elements.terminalCommands ? elements.terminalCommands.textContent : '', '已复制课堂命令');
-    });
-  }
-
-  const copyConflictBtn = document.getElementById('copyConflictCommands');
-  const conflictCommandsEl = document.getElementById('conflictCommands');
-  if (copyConflictBtn && conflictCommandsEl) {
-    copyConflictBtn.addEventListener('click', () => {
-      copyText(conflictCommandsEl.textContent || '', '已复制冲突处理命令');
-    });
-  }
-
-  updateBuilder();
-}
-
 bindAvatarFallback();
-bindBuilder();
 bindActivityPanel();
 bindCheersOverlay();
 bindWallControls();

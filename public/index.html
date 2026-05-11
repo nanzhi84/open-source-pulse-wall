@@ -25,7 +25,7 @@
     <path class="plane-fold" d="M204 68 L214 104" />
   </svg>
 
-  <main class="page-shell">
+  <main class="page-shell pulse-dashboard" id="home">
     <header class="topbar">
       <a class="brand" href="#home" aria-label="Open Source Pulse Wall home">
         <span class="brand-mark" aria-hidden="true">
@@ -38,75 +38,20 @@
         </span>
         <span>
           <strong>Open Source Pulse Wall</strong>
-          <small>Classroom Git Project</small>
+          <small>GitHub 协作展示墙</small>
         </span>
       </a>
       <nav class="topnav" aria-label="页面导航">
-        <a href="#home" class="active">首页</a>
-        <a href="#feedback">实时反馈</a>
-        <a href="#contribute">开始贡献</a>
-        <a href="#wall">贡献墙</a>
-        <a href="#board">公告板</a>
-        <a href="#history">Git 历史</a>
-        <a href="#guide">课堂流程</a>
+        <a href="#wall" class="active">贡献者大厅</a>
+        <a href="#board">PR 与讨论</a>
+        <a href="#history">完整时间线</a>
+        <a href="guide.html">开始贡献</a>
       </nav>
       <div class="star-badge" aria-label="课堂星标数量">
         <span>Star</span>
         <strong id="starCount">--</strong>
       </div>
     </header>
-
-    <section class="hero" id="home">
-      <div class="hero-copy">
-        <h1>Open Source Pulse Wall</h1>
-        <h2>教室里的 Git 开源贡献墙</h2>
-        <p class="hero-text">记录每一次学习、每一次提交、每一次成长。一起用开源让知识产生真实的影响力。</p>
-        <div class="status-cluster">
-          <span class="status-pill">
-            <span class="status-dot" id="connectionDot"></span>
-            <span id="connectionText">正在连接实时反馈通道</span>
-          </span>
-          <span class="sync-note" id="syncNote">等待 GitHub 同步配置</span>
-        </div>
-        <div class="hero-actions">
-          <a class="primary-action" href="#contribute">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19c5-1 9-5 10-10 2 2 4 3 6 3-2-4-5-7-9-9-1 6-4 11-7 16Z" /><path d="M7 17c3-1 5-3 7-6" /></svg>
-            开始贡献
-          </a>
-          <button class="ghost-action" id="copyCloneCommand" type="button">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
-            复制课堂命令
-          </button>
-        </div>
-      </div>
-
-      <section class="command-card" aria-label="课堂贡献命令">
-        <div class="sketch-caption">课堂贡献命令</div>
-        <div class="command-title">
-          <span>$</span>
-          <small>Bash</small>
-        </div>
-        <pre><code id="terminalCommands"># 1. Fork 本仓库
-git clone <GitHub 仓库地址>
-
-# 2. 创建你的分支
-git checkout -b feat/your-name
-
-# 3. 添加你的个人信息
-cp data/profiles/_template.json data/profiles/your-github-id.json
-# 编辑该 JSON；也可用本页上方表单生成内容后写入同名文件
-npm run validate
-
-# 4. 提交并推送
-git add .
-git commit -m "feat: add my profile"
-git push origin feat/your-name
-
-# 5. 创建 Pull Request
-# 到 main 分支，等待 Review & Merge</code></pre>
-        <p class="tip-line">小贴士：提交后，你的卡片将自动出现在贡献者墙。</p>
-      </section>
-    </section>
 
     <section class="feedback-panel" id="feedback" aria-label="实时反馈">
       <div class="feedback-left">
@@ -146,89 +91,13 @@ git push origin feat/your-name
       </aside>
     </section>
 
-    <section class="builder" id="contribute">
-      <form class="builder-form" id="profileForm">
-        <div class="builder-heading">
-          <h2>构建你的个人卡片</h2>
-          <p>填写信息，选择头像，生成你的专属贡献卡片。</p>
-        </div>
-        <label>
-          名字 *
-          <input id="inputName" name="name" type="text" value="张三" maxlength="40" placeholder="例如：张三" />
-        </label>
-        <label>
-          GitHub 用户名 *
-          <input id="inputGithub" name="github" type="text" value="zhangsan" maxlength="39" placeholder="例如：zhangsan" />
-        </label>
-        <label>
-          角色 *
-          <select id="inputRole" name="role">
-            <option value="前端开发者">前端开发者</option>
-            <option value="后端开发者">后端开发者</option>
-            <option value="全栈工程师">全栈工程师</option>
-            <option value="UI/UX 设计师">UI/UX 设计师</option>
-            <option value="数据工程师">数据工程师</option>
-            <option value="开源贡献者">开源贡献者</option>
-          </select>
-        </label>
-        <label>
-          一句话宣言 *
-          <input id="inputMotto" name="motto" type="text" value="用代码改变世界" maxlength="120" placeholder="例如：用代码改变世界" />
-        </label>
-        <label>
-          技术标签 *
-          <input id="inputStack" name="stack" type="text" value="React, TypeScript, Node.js, Open Source" placeholder="例如：React, Node.js, Python" />
-        </label>
-        <label>
-          城市 *
-          <input id="inputCity" name="city" type="text" value="北京" maxlength="40" placeholder="例如：北京" />
-        </label>
-        <fieldset class="style-options">
-          <legend>风格 *</legend>
-          <label><input type="radio" name="style" value="minimal" /> 简约</label>
-          <label><input type="radio" name="style" value="nature" checked /> 自然</label>
-          <label><input type="radio" name="style" value="sketch" /> 手绘</label>
-          <label><input type="radio" name="style" value="notebook" /> 笔记</label>
-          <label><input type="radio" name="style" value="ink" /> 墨水</label>
-          <label><input type="radio" name="style" value="sage" /> 极客</label>
-        </fieldset>
-        <fieldset class="avatar-options">
-          <legend>头像 *</legend>
-          <div id="avatarPicker"></div>
-          <label class="avatar-url-field">
-            自定义头像链接
-            <input id="inputAvatarUrl" name="avatarUrl" type="url" pattern="https://.*" inputmode="url" placeholder="https://example.com/avatar.png" />
-          </label>
-        </fieldset>
-        <button class="submit-card" id="copyJson" type="button">预览我的卡片</button>
-      </form>
-
-      <aside class="preview-panel">
-        <div class="panel-heading">
-          <h2>实时预览</h2>
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12Z" /><circle cx="12" cy="12" r="3" /></svg>
-        </div>
-        <div id="profilePreview"></div>
-        <p class="preview-note">卡片样式将随信息与头像自动调整</p>
-      </aside>
-
-      <aside class="json-panel">
-        <div class="panel-heading">
-          <h2>JSON 预览</h2>
-          <span>{ }</span>
-        </div>
-        <pre class="json-preview"><code id="jsonPreview"></code></pre>
-        <button class="copy-json" id="copyFilename" type="button">复制文件名</button>
-      </aside>
-    </section>
-
-    <section class="wall-section" id="wall">
+    <section class="wall-section dashboard-main" id="wall">
       <div class="section-head inline-head">
         <div class="section-title">
-          <h2>贡献者墙</h2>
+          <h2>贡献者大厅</h2>
           <p class="wall-summary" id="wallSummary">等待贡献者数据</p>
         </div>
-        <button class="text-link wall-toggle" id="toggleWallMode" type="button" aria-expanded="false" aria-controls="wallControls">全部贡献者</button>
+        <button class="text-link wall-toggle" id="toggleWallMode" type="button" aria-expanded="false" aria-controls="wallDrawer">全部贡献者 -&gt;</button>
       </div>
       <div class="wall-controls" id="wallControls" hidden>
         <label class="wall-search" for="wallSearch">
@@ -247,16 +116,16 @@ git push origin feat/your-name
       </div>
     </section>
 
-    <section class="board-section" id="board" aria-label="Issue 与 Review 公告板">
+    <section class="board-section" id="board" aria-label="PR、Issue 与讨论看板">
       <div class="section-head inline-head">
         <div class="section-title">
-          <h2>公告板</h2>
+          <h2>PR 协作看板</h2>
           <p class="board-summary" id="boardSummary">等待 GitHub 同步 Issue 与 PR 数据</p>
         </div>
-        <a class="text-link board-open" id="openBoardRepo" href="#" target="_blank" rel="noreferrer" hidden>在 GitHub 查看</a>
+        <a class="text-link board-open" id="openBoardRepo" href="#" target="_blank" rel="noreferrer" hidden>GitHub 仓库 -&gt;</a>
       </div>
       <div class="board-grid">
-        <article class="board-column" aria-label="最近 Issue">
+        <article class="board-column board-column-issues" aria-label="最近 Issue">
           <header class="board-column-head">
             <div class="board-column-title">
               <span class="board-column-icon" aria-hidden="true">
@@ -271,7 +140,7 @@ git push origin feat/your-name
           </ol>
         </article>
 
-        <article class="board-column" aria-label="等待 Review 的 PR">
+        <article class="board-column board-column-pr" aria-label="等待 Review 的 PR">
           <header class="board-column-head">
             <div class="board-column-title">
               <span class="board-column-icon board-column-icon-pr" aria-hidden="true">
@@ -279,11 +148,34 @@ git push origin feat/your-name
               </span>
               <h3>等待 Review 的 PR</h3>
             </div>
-            <a class="board-column-link" id="openPullsLink" href="#" target="_blank" rel="noreferrer" hidden>查看全部</a>
+            <a class="board-column-link" id="openPullsLink" href="#" target="_blank" rel="noreferrer" hidden>查看全部 PR</a>
           </header>
           <ol class="board-list" id="pullsList">
             <li class="board-empty">还没有等待 review 的 PR</li>
           </ol>
+        </article>
+      </div>
+      <div class="discussion-lanes" aria-label="讨论与任务入口">
+        <article>
+          <h3>待回答问题</h3>
+          <ol id="communityQuestionsList">
+            <li class="community-empty">等待 GitHub 数据</li>
+          </ol>
+          <a class="community-open" id="openQuestionsLink" href="#" target="_blank" rel="noreferrer" hidden>查看全部 -&gt;</a>
+        </article>
+        <article>
+          <h3>热门想法</h3>
+          <ol id="communityIdeasList">
+            <li class="community-empty">等待 GitHub 数据</li>
+          </ol>
+          <a class="community-open" id="openIdeasLink" href="#" target="_blank" rel="noreferrer" hidden>查看全部 -&gt;</a>
+        </article>
+        <article>
+          <h3>Bug 反馈</h3>
+          <ol id="communityBugsList">
+            <li class="community-empty">等待 GitHub 数据</li>
+          </ol>
+          <a class="community-open" id="openBugsLink" href="#" target="_blank" rel="noreferrer" hidden>查看全部 -&gt;</a>
         </article>
       </div>
     </section>
@@ -291,7 +183,7 @@ git push origin feat/your-name
     <section class="history-section" id="history">
       <div class="section-head inline-head">
         <div class="section-title">
-          <h2>Git 历史</h2>
+          <h2>Git 历史时间线</h2>
           <p class="history-summary" id="historySummary">等待 GitHub 同步</p>
         </div>
         <div class="history-actions">
@@ -303,133 +195,13 @@ git push origin feat/your-name
           </button>
         <button class="text-link history-toggle" id="toggleHistoryMode" type="button" aria-expanded="false"
             aria-controls="gitGraph" hidden>展开全部</button>
-          <a class="text-link history-open" id="openHistoryRepo" href="#" target="_blank" rel="noreferrer" hidden>在 GitHub 查看</a>
+          <a class="text-link history-open" id="openHistoryRepo" href="#" target="_blank" rel="noreferrer" hidden>完整时间线 -&gt;</a>
         </div>
       </div>
       <p class="history-hint">从 GitHub 远端实时拉取最近 <strong id="historyCount">--</strong> 个提交。圆点是普通提交，菱形是合并提交。点击行可在 GitHub 打开。</p>
       <div class="git-graph" id="gitGraph">
         <div class="git-graph-empty">尚未连接 GitHub。配置后会显示提交图。</div>
       </div>
-    </section>
-
-    <section class="steps" id="guide">
-      <div class="section-head">
-        <h2>课堂流程</h2>
-      </div>
-      <div class="step-list">
-        <article>
-          <span>1</span>
-          <h3>Fork 与 Clone</h3>
-          <svg viewBox="0 0 64 64" aria-hidden="true"><path d="M20 8v20M14 8v14c0 3 2 6 6 6s6-3 6-6V8M20 28v26M42 10v18c0 6-4 10-10 10h-6" /></svg>
-          <p>Fork 本仓库到你的 GitHub，并 Clone 到本地。</p>
-        </article>
-        <article>
-          <span>2</span>
-          <h3>Branch 与 Commit</h3>
-          <svg viewBox="0 0 64 64" aria-hidden="true"><path d="M18 12v40M18 22c14 0 14 18 28 18M46 40v12M18 22h24M18 52h24" /><circle cx="18" cy="12" r="5" /><circle cx="46" cy="40" r="5" /><circle cx="18" cy="52" r="5" /></svg>
-          <p>创建个人分支，添加你的信息并提交 Commit。</p>
-        </article>
-        <article>
-          <span>3</span>
-          <h3>Push 与 Pull Request</h3>
-          <svg viewBox="0 0 64 64" aria-hidden="true"><path d="M18 42h28c8 0 12-5 12-11s-5-11-12-11c-3-8-10-12-18-10-7 2-11 7-12 14-6 1-10 5-10 11 0 5 4 7 12 7Z" /><path d="M32 46V26M24 34l8-8 8 8" /></svg>
-          <p>推送到远程仓库，并创建 Pull Request 到 main 分支。</p>
-        </article>
-        <article>
-          <span>4</span>
-          <h3>Review 与 Merge</h3>
-          <svg viewBox="0 0 64 64" aria-hidden="true"><path d="M10 14h44v26H30L18 52V40H10V14Z" /><path d="M20 25h24M20 33h16" /></svg>
-          <p>通过代码审查，合并后你的卡片展示在贡献墙。</p>
-        </article>
-      </div>
-<div class="conflict-lab">
-    <div class="conflict-head">
-        <h3>冲突处理 5 步法</h3>
-        <p>PR 提示 <code>conflicts must be resolved</code> 时按下面顺序操作。默认 <strong>merge</strong>，<strong>rebase</strong> 进阶。
-        </p>
-    </div>
-
-    <ol class="conflict-flow" aria-label="冲突处理流程">
-        <li>
-            <span class="conflict-step-num">1</span>
-            <h4>Sync</h4>
-            <p>拉老师仓库</p>
-        </li>
-        <li>
-            <span class="conflict-step-num">2</span>
-            <h4>Edit</h4>
-            <p>删冲突标记</p>
-        </li>
-        <li>
-            <span class="conflict-step-num">3</span>
-            <h4>Check</h4>
-            <p><code>npm run validate</code></p>
-        </li>
-        <li>
-            <span class="conflict-step-num">4</span>
-            <h4>Save</h4>
-            <p><code>git add</code> + <code>commit</code></p>
-        </li>
-        <li>
-            <span class="conflict-step-num">5</span>
-            <h4>Push</h4>
-            <p>推到自己分支</p>
-        </li>
-    </ol>
-
-    <div class="conflict-commands">
-        <div class="conflict-commands-head">
-            <span class="conflict-commands-title">完整命令（默认 merge 流程）</span>
-            <button class="conflict-copy" id="copyConflictCommands" type="button">复制</button>
-        </div>
-        <pre><code id="conflictCommands"># 1. Sync 同步老师仓库
-git fetch upstream
-git checkout add-your-profile
-git merge upstream/main
-
-# 2. Edit 打开冲突文件，删掉 &lt;&lt;&lt;&lt;&lt;&lt;&lt; / ======= / &gt;&gt;&gt;&gt;&gt;&gt;&gt; 三行
-#    把两边内容合并成合法 JSON
-
-# 3. Check 校验
-npm run validate
-
-# 4. Save 提交
-git add &lt;冲突文件&gt;
-git commit
-
-# 5. Push 推送
-git push origin add-your-profile</code></pre>
-    </div>
-
-    <p class="conflict-rebase-hint">
-        <strong>进阶 rebase：</strong>第 1 步把 <code>merge</code> 换成 <code>rebase</code>，遇到冲突修完后
-        <code>git rebase --continue</code>，第 5 步用 <code>git push --force-with-lease</code>（不要 <code>-f</code>）。
-    </p>
-</div>
-
-<div class="resource-grid">
-    <article class="resource-card">
-        <div class="resource-icon">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 6h11a3 3 0 0 1 3 3v5a3 3 0 0 1-3 3h-3l-4 3v-3H5a3 3 0 0 1-3-3V9a3 3 0 0 1 3-3Z" /><path d="M7 10h7M7 13h5" /></svg>
-        </div>
-        <h4>给同学加油 (Cheers)</h4>
-        <p>在对方的 <code>cheers</code> 数组里追加 <code>{ from, message }</code>。多人同时加油会触发冲突，正好练习上面五步。</p>
-    </article>
-    <article class="resource-card">
-        <div class="resource-icon">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10Z"/><path d="m9 12 2 2 4-4"/></svg>
-        </div>
-        <h4>提一个好 Issue</h4>
-        <p>四种模板可选。标题「动词+现象」，复现步骤一步步写，长日志用 <code>```</code> 包起来。</p>
-    </article>
-    <article class="resource-card">
-        <div class="resource-icon">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-        </div>
-        <h4>请 Reviewer</h4>
-        <p>老师自动指派；Action 随机抽同学 @ 提醒；也可在 PR 手动 <code>@同学</code>。改完记得点 <strong>Re-request review</strong>。</p>
-    </article>
-</div>
     </section>
 
     <section class="about" id="about">
@@ -464,6 +236,44 @@ git push origin add-your-profile</code></pre>
         </button>
       </div>
       <ol class="activity-list cheers-full-list" id="cheersFullList"></ol>
+    </section>
+  </div>
+
+  <div class="wall-drawer-overlay" id="wallDrawerOverlay" hidden>
+    <section class="wall-drawer" id="wallDrawer" role="dialog" aria-modal="true" aria-labelledby="wallDrawerTitle" tabindex="-1">
+      <div class="wall-drawer-head">
+        <div>
+          <h2 id="wallDrawerTitle">全部贡献者</h2>
+          <p id="wallDrawerCount">等待贡献者数据</p>
+        </div>
+        <button class="wall-drawer-close" id="closeWallDrawer" type="button" aria-label="关闭全部贡献者">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" /></svg>
+        </button>
+      </div>
+      <label class="wall-drawer-search" for="wallDrawerSearch">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m21 21-5.2-5.2" /><circle cx="10.8" cy="10.8" r="6.8" /></svg>
+        <span class="sr-only">搜索全部贡献者</span>
+        <input id="wallDrawerSearch" type="search" placeholder="搜索贡献者..." autocomplete="off" />
+      </label>
+      <div class="wall-drawer-filters" aria-label="贡献者筛选">
+        <button type="button" data-drawer-filter="all" class="is-active">全部</button>
+        <button type="button" data-drawer-filter="new">新人</button>
+        <button type="button" data-drawer-filter="active">活跃</button>
+        <button type="button" data-drawer-filter="review">Review</button>
+        <button type="button" data-drawer-filter="discussion">Discussion</button>
+      </div>
+      <div class="wall-drawer-tools">
+        <label>
+          排序：
+          <select id="wallDrawerSort">
+            <option value="recent">最近贡献</option>
+            <option value="handle">GitHub 用户名</option>
+          </select>
+        </label>
+        <span id="wallDrawerPageNote">预览列表</span>
+      </div>
+      <ol class="wall-drawer-list" id="wallDrawerList"></ol>
+      <button class="wall-drawer-load" id="wallDrawerLoadMore" type="button" hidden>加载更多</button>
     </section>
   </div>
 

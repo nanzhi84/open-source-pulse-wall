@@ -8,12 +8,13 @@ const INDEX_PATH = path.join(ROOT, 'public', 'index.html');
 const APP_PATH = path.join(ROOT, 'public', 'app.js');
 const WARNING_AVATAR_PATH = path.join(ROOT, 'public', 'avatars', 'avatar-warning.svg');
 
-test('profile builder exposes a custom avatar URL field', () => {
+test('profile builder is removed from the display page', () => {
   const html = fs.readFileSync(INDEX_PATH, 'utf8');
 
-  assert.match(html, /id="inputAvatarUrl"/);
-  assert.match(html, /name="avatarUrl"/);
-  assert.match(html, /type="url"/);
+  assert.doesNotMatch(html, /构建你的个人卡片/);
+  assert.doesNotMatch(html, /id="inputAvatarUrl"/);
+  assert.doesNotMatch(html, /id="profilePreview"/);
+  assert.doesNotMatch(html, /id="jsonPreview"/);
 });
 
 test('profile cards fall back to a local warning avatar when avatar images fail', () => {
