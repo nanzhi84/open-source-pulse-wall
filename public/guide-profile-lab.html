@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>6. Profile 字段实验 | Open Source Pulse Wall</title>
+  <meta name="description" content="解释 Open Source Pulse Wall Profile JSON 字段、格式要求和常见错误的教学章节。" />
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="paper-grain" aria-hidden="true"></div>
+
+  <main class="guide-doc-layout">
+    <aside class="guide-sidebar" aria-label="章节目录">
+      <a class="guide-sidebar-brand" href="guide.html">
+        <strong>Open Source Pulse Wall</strong>
+        <small>GitHub 分级教学</small>
+      </a>
+      <nav class="guide-sidebar-nav">
+        <a href="guide.html">课程目录</a>
+        <a href="guide-level-0.html">1. GitHub 协作地图</a>
+        <a href="guide-level-1.html">2. GitHub 网页端贡献</a>
+        <a href="guide-level-2.html">3. VS Code 全流程</a>
+        <a href="guide-level-3.html">4. 命令行路径</a>
+        <a href="guide-level-4.html">5. PR Review 与修错</a>
+        <a class="is-active" href="guide-profile-lab.html">6. Profile 字段实验</a>
+      </nav>
+      <a class="guide-sidebar-back" href="index.html">返回展示墙</a>
+    </aside>
+
+    <article class="guide-doc-main">
+      <div class="guide-video-placeholder">
+        <span>视频占位</span>
+        <p>建议视频：现场改一个 Profile JSON，故意制造一次逗号错误和一次字段错误，再用 VS Code 和 `npm run validate` 修复。</p>
+      </div>
+
+      <h1>6. Profile 字段实验</h1>
+      <p class="guide-doc-lead">这个实验专门处理 `data/profiles/你的用户名.json`。学生只改自己的 JSON 文件，先保证格式正确，再考虑个人表达。所有字段都要按项目规则填写，否则展示墙可能无法读取。</p>
+
+      <section class="guide-doc-section">
+        <h2>推荐模板</h2>
+        <pre><code>{
+  "name": "你的名字",
+  "github": "your-github-id",
+  "role": "First-time contributor",
+  "motto": "今天完成我的第一个开源 PR",
+  "stack": ["Git", "Open Source"],
+  "city": "Beijing",
+  "style": "nature",
+  "avatar": "avatars/avatar-01.png",
+  "homepage": "",
+  "cheers": []
+}</code></pre>
+        <p>复制模板后，先只改文本内容，不要调整字段顺序，也不要删除字段。新手阶段保持结构稳定，排错会简单很多。</p>
+      </section>
+
+      <section class="guide-doc-section">
+        <h2>字段说明</h2>
+        <div class="guide-doc-grid">
+          <article><h3>`name`</h3><p>展示在卡片上的名字，可以是真名、昵称或课堂称呼。不要留空。</p></article>
+          <article><h3>`github`</h3><p>GitHub 用户名。建议和文件名保持一致，例如文件名是 `octocat.json`，这里就写 `octocat`。</p></article>
+          <article><h3>`role`</h3><p>身份或标签，例如 `First-time contributor`、`学生`、`Frontend learner`。它应该短一些，方便卡片展示。</p></article>
+          <article><h3>`motto`</h3><p>一句话介绍自己。可以写学习目标、参与原因或一句简短宣言，不要写太长。</p></article>
+          <article><h3>`stack`</h3><p>技术标签数组。每个标签都要放在英文双引号里，标签之间用英文逗号分隔。</p></article>
+          <article><h3>`city`</h3><p>城市或课堂位置，可以写中文。这个字段用于展示个人来源，不需要写详细地址。</p></article>
+          <article><h3>`style`</h3><p>卡片风格，只能使用项目支持的值：`minimal`、`nature`、`sketch`、`notebook`、`ink`、`sage`。</p></article>
+          <article><h3>`avatar`</h3><p>头像路径。可以使用内置头像，例如 `avatars/avatar-01.png`，也可以使用安全的 https 图片链接。</p></article>
+          <article><h3>`homepage`</h3><p>个人主页链接。没有主页就写空字符串 `""`，不要随便填不完整的网址。</p></article>
+          <article><h3>`cheers`</h3><p>寄语列表。第一次添加 Profile 时保持空数组 `[]`，这个字段留给其他同学之后给你写寄语。</p></article>
+        </div>
+      </section>
+
+      <section class="guide-doc-section">
+        <h2>JSON 格式规则</h2>
+        <ul class="guide-doc-list">
+          <li>字符串必须使用英文双引号，不能用中文引号，也不要用单引号。</li>
+          <li>字段名和字段值之间用英文冒号。</li>
+          <li>字段之间用英文逗号分隔，但最后一个字段后面不能有逗号。</li>
+          <li>数组用方括号，例如 `["Git", "Open Source"]`。</li>
+          <li>空字符串写成 `""`，空数组写成 `[]`。</li>
+          <li>保存后运行 `npm run validate`，不要只相信肉眼检查。</li>
+        </ul>
+      </section>
+
+      <section class="guide-doc-section">
+        <h2>常见错误和修法</h2>
+        <div class="guide-doc-grid">
+          <article><h3>最后一项多了逗号</h3><p>把最后一个字段后面的逗号删掉。JSON 不允许尾随逗号。</p></article>
+          <article><h3>文件名不是 GitHub 用户名</h3><p>把文件重命名为自己的 GitHub 用户名，例如 `octocat.json`。</p></article>
+          <article><h3>改到了 `_template.json`</h3><p>恢复模板文件，再复制出自己的新文件。模板不属于任何一个学生。</p></article>
+          <article><h3>`stack` 写成普通文本</h3><p>`stack` 应该是数组，不是 `"Git, Open Source"` 这种字符串。</p></article>
+          <article><h3>`style` 写了不存在的值</h3><p>回到支持列表里选择一个，例如 `nature` 或 `notebook`。</p></article>
+          <article><h3>自己填写了 `cheers`</h3><p>第一次提交时保持 `cheers: []`，寄语由其他同学后续添加。</p></article>
+        </div>
+      </section>
+
+      <section class="guide-doc-section">
+        <h2>提交前自检</h2>
+        <pre><code>npm run validate</code></pre>
+        <p>如果校验失败，先看报错里出现的文件名，再看字段名。不要一次性改很多地方；每次只修一个明确错误，保存后重新运行校验。</p>
+      </section>
+
+      <nav class="guide-doc-pager" aria-label="章节导航">
+        <a href="guide-level-4.html">上一章：5. PR Review 与修错</a>
+        <a href="guide.html">返回目录</a>
+      </nav>
+    </article>
+  </main>
+</body>
+</html>

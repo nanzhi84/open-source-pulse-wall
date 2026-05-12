@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>2. GitHub 网页端贡献 | Open Source Pulse Wall</title>
+  <meta name="description" content="只用 GitHub 网页端完成 Fork、添加 Profile 文件和创建 Pull Request 的教学章节。" />
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="paper-grain" aria-hidden="true"></div>
+
+  <main class="guide-doc-layout">
+    <aside class="guide-sidebar" aria-label="章节目录">
+      <a class="guide-sidebar-brand" href="guide.html">
+        <strong>Open Source Pulse Wall</strong>
+        <small>GitHub 分级教学</small>
+      </a>
+      <nav class="guide-sidebar-nav">
+        <a href="guide.html">课程目录</a>
+        <a href="guide-level-0.html">1. GitHub 协作地图</a>
+        <a class="is-active" href="guide-level-1.html">2. GitHub 网页端贡献</a>
+        <a href="guide-level-2.html">3. VS Code 全流程</a>
+        <a href="guide-level-3.html">4. 命令行路径</a>
+        <a href="guide-level-4.html">5. PR Review 与修错</a>
+        <a href="guide-profile-lab.html">6. Profile 字段实验</a>
+      </nav>
+      <a class="guide-sidebar-back" href="index.html">返回展示墙</a>
+    </aside>
+
+    <article class="guide-doc-main">
+      <div class="guide-video-placeholder">
+        <span>视频占位</span>
+        <p>建议视频：完整录屏网页端添加 Profile，从 Fork 到打开 Pull Request。录屏时不要跳过文件名、目标分支和提交说明，这三个地方最容易出错。</p>
+      </div>
+
+      <h1>2. GitHub 网页端贡献</h1>
+      <p class="guide-doc-lead">这一章适合完全没有本地环境的学生。目标不是把 Git 学完，而是先完成一次真实贡献闭环：在自己的 Fork 里改文件，然后用 Pull Request 把修改交回老师仓库。</p>
+
+      <section class="guide-doc-section">
+        <h2>适用场景</h2>
+        <p>网页端流程适合第一次上课、没有安装 Node.js、没有配置 VS Code、或者只是想快速体验 PR 的学生。它的优点是路径短，所有操作都在浏览器里完成；缺点是本地校验能力弱，不适合长期开发。因此这一章只负责建立信心，后面还要进入 VS Code 和命令行。</p>
+      </section>
+
+      <section class="guide-doc-section">
+        <h2>操作步骤</h2>
+        <ol class="guide-doc-list">
+          <li>打开老师仓库，点击页面右上角的 Fork，把仓库复制到自己的 GitHub 账号下。</li>
+          <li>进入自己的 Fork，确认页面左上角显示的是自己的用户名，而不是老师的用户名。</li>
+          <li>打开 `data/profiles` 目录，先点开 `_template.json` 看结构，不要直接修改模板。</li>
+          <li>新建文件 `data/profiles/your-github-id.json`，把 `your-github-id` 换成自己的 GitHub 用户名。</li>
+          <li>复制模板内容，填写 `name`、`github`、`role`、`motto`、`stack`、`city`、`style`、`avatar`、`homepage` 和 `cheers`。</li>
+          <li>提交更改时，选择创建新分支。分支名可以写 `add-your-profile` 或 `add-你的用户名-profile`。</li>
+          <li>提交后点击 Compare & pull request，确认 base 是老师仓库的 `main`，compare 是你自己的分支。</li>
+          <li>填写 PR 标题，例如 `feat: add my profile`，然后创建 Pull Request。</li>
+        </ol>
+      </section>
+
+      <p class="guide-doc-note">网页端能完成贡献，但不容易提前发现 JSON 格式错误。只要进入 VS Code 或命令行路径，就必须运行 `npm run validate`。</p>
+
+      <div class="guide-two-shots">
+        <figure class="guide-shot">
+          <img src="guide-assets/02-profile-directory.png" alt="data/profiles 目录截图。" loading="lazy" />
+          <figcaption>`data/profiles` 目录里放每位同学的 Profile JSON。文件名应该和 GitHub 用户名对应。</figcaption>
+        </figure>
+        <figure class="guide-shot">
+          <img src="guide-assets/05-add-file-docs.png" alt="GitHub 官方添加文件文档截图。" loading="lazy" />
+          <figcaption>GitHub 网页端可以直接添加文件，适合第一节课快速走完贡献流程。</figcaption>
+        </figure>
+      </div>
+
+      <section class="guide-doc-section">
+        <h2>提交前检查</h2>
+        <ul class="guide-doc-list">
+          <li>你是否在自己的 Fork 里操作，而不是老师仓库里操作。</li>
+          <li>文件是否放在 `data/profiles` 目录下，而不是仓库根目录。</li>
+          <li>文件名是否是自己的 GitHub 用户名，例如 `octocat.json`。</li>
+          <li>`github` 字段是否和文件名一致。</li>
+          <li>`cheers` 是否保持为空数组 `[]`。</li>
+          <li>Pull Request 的目标是否是老师仓库的 `main`。</li>
+        </ul>
+      </section>
+
+      <section class="guide-doc-section">
+        <h2>常见误区</h2>
+        <p>很多学生会把网页端的“提交文件”理解成已经完成开源贡献。实际上，提交只发生在自己的 Fork 或自己的分支里。只有创建 Pull Request，老师仓库才会收到这次修改。还有一种常见错误是把 base 和 compare 选反，导致 PR 看起来像是要把老师仓库合并进自己的 Fork。创建 PR 时要停下来检查一次方向。</p>
+      </section>
+
+      <nav class="guide-doc-pager" aria-label="章节导航">
+        <a href="guide-level-0.html">上一章：1. 协作地图</a>
+        <a href="guide.html">返回目录</a>
+        <a href="guide-level-2.html">下一章：3. VS Code 全流程</a>
+      </nav>
+    </article>
+  </main>
+</body>
+</html>

@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>3. VS Code 全流程 | Open Source Pulse Wall</title>
+  <meta name="description" content="用 VS Code 完成 clone、编辑 JSON、运行校验、提交和推送的教学章节。" />
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="paper-grain" aria-hidden="true"></div>
+
+  <main class="guide-doc-layout">
+    <aside class="guide-sidebar" aria-label="章节目录">
+      <a class="guide-sidebar-brand" href="guide.html">
+        <strong>Open Source Pulse Wall</strong>
+        <small>GitHub 分级教学</small>
+      </a>
+      <nav class="guide-sidebar-nav">
+        <a href="guide.html">课程目录</a>
+        <a href="guide-level-0.html">1. GitHub 协作地图</a>
+        <a href="guide-level-1.html">2. GitHub 网页端贡献</a>
+        <a class="is-active" href="guide-level-2.html">3. VS Code 全流程</a>
+        <a href="guide-level-3.html">4. 命令行路径</a>
+        <a href="guide-level-4.html">5. PR Review 与修错</a>
+        <a href="guide-profile-lab.html">6. Profile 字段实验</a>
+      </nav>
+      <a class="guide-sidebar-back" href="index.html">返回展示墙</a>
+    </aside>
+
+    <article class="guide-doc-main">
+      <div class="guide-video-placeholder">
+        <span>视频占位</span>
+        <p>建议视频：从 VS Code 的 Clone Repository 开始录，完整展示文件树、JSON 编辑、内置终端、Source Control diff、commit 和 push。</p>
+      </div>
+
+      <h1>3. VS Code 全流程</h1>
+      <p class="guide-doc-lead">这一章解决网页端流程的两个短板：学生容易找不到仓库目录，也不容易提前发现 JSON 格式错误。VS Code 把文件树、编辑器、终端和 Git 面板放在同一个窗口里，适合作为新手的主路径。</p>
+
+      <section class="guide-doc-section">
+        <h2>准备工作</h2>
+        <ul class="guide-doc-list">
+          <li>电脑已经安装 VS Code。</li>
+          <li>电脑已经安装 Git，VS Code Source Control 面板能识别 Git 仓库。</li>
+          <li>电脑已经安装 Node.js 18 或更高版本，用来运行 `npm run validate`。</li>
+          <li>GitHub 上已经 Fork 了老师仓库。</li>
+        </ul>
+      </section>
+
+      <section class="guide-doc-section">
+        <h2>克隆仓库</h2>
+        <ol class="guide-doc-list">
+          <li>打开 VS Code，进入 Source Control 面板，选择 Clone Repository。</li>
+          <li>粘贴自己 Fork 的仓库地址。地址应该包含自己的 GitHub 用户名。</li>
+          <li>选择一个固定目录，例如桌面上的课堂文件夹。不要随手选下载目录，也不要选到系统目录。</li>
+          <li>克隆完成后，VS Code 会询问是否打开仓库。选择打开。</li>
+          <li>打开后看左侧文件树，应该能看到 `data`、`public`、`scripts`、`test` 等目录。</li>
+        </ol>
+      </section>
+
+      <section class="guide-doc-section">
+        <h2>添加 Profile 文件</h2>
+        <ol class="guide-doc-list">
+          <li>在文件树里打开 `data/profiles`。</li>
+          <li>复制 `_template.json`，把新文件命名为 `your-github-id.json`。</li>
+          <li>打开新文件，只修改自己的内容，不改 `_template.json`。</li>
+          <li>如果 VS Code 出现红色波浪线，先停下来修 JSON 格式。常见原因是漏双引号、漏逗号、最后一项多逗号。</li>
+          <li>保存文件后，再进入终端校验。</li>
+        </ol>
+      </section>
+
+      <section class="guide-doc-section">
+        <h2>运行校验</h2>
+        <p>打开 VS Code 内置终端时，要先确认终端路径在项目根目录。如果终端里看不到 `package.json` 所在目录，`npm run validate` 可能会报找不到脚本。</p>
+        <pre><code>npm run validate</code></pre>
+        <p>校验通过，说明 JSON 能被项目脚本读取，字段也符合当前规则。校验失败时，先读错误里出现的文件名和字段名，不要盲目重写整个文件。</p>
+      </section>
+
+      <section class="guide-doc-section">
+        <h2>提交和推送</h2>
+        <ol class="guide-doc-list">
+          <li>打开 Source Control 面板，先看 Changed Files。</li>
+          <li>正常情况下，只应该出现你自己的 `data/profiles/your-github-id.json`。</li>
+          <li>点击文件查看 diff。绿色是新增内容，红色是删除内容。</li>
+          <li>确认无误后 stage 文件，提交信息写 `feat: add my profile`。</li>
+          <li>点击 Sync Changes 或 Push，把分支推到自己的 GitHub Fork。</li>
+          <li>回到 GitHub 页面，创建 Pull Request。</li>
+        </ol>
+      </section>
+
+      <section class="guide-doc-section">
+        <h2>新手检查点</h2>
+        <ul class="guide-doc-list">
+          <li>窗口标题或文件树根目录显示的是 `open-source-pulse-wall`。</li>
+          <li>终端能执行 `npm run validate`，而不是提示找不到 `package.json`。</li>
+          <li>Source Control 里没有出现 `public`、`dist`、`README.md` 等无关文件。</li>
+          <li>提交前已经看过 diff，确认没有改到别人的 Profile。</li>
+        </ul>
+      </section>
+
+      <nav class="guide-doc-pager" aria-label="章节导航">
+        <a href="guide-level-1.html">上一章：2. 网页端贡献</a>
+        <a href="guide.html">返回目录</a>
+        <a href="guide-level-3.html">下一章：4. 命令行路径</a>
+      </nav>
+    </article>
+  </main>
+</body>
+</html>

@@ -7,6 +7,15 @@ const ROOT = path.resolve(__dirname, '..');
 const INDEX_PATH = path.join(ROOT, 'public', 'index.html');
 const GUIDE_PATH = path.join(ROOT, 'public', 'guide.html');
 const APP_PATH = path.join(ROOT, 'public', 'app.js');
+const STYLES_PATH = path.join(ROOT, 'public', 'styles.css');
+
+function cssBlock(css, selector) {
+  const start = css.indexOf(`${selector} {`);
+  assert.notEqual(start, -1, `${selector} block should exist`);
+  const end = css.indexOf('\n}', start);
+  assert.notEqual(end, -1, `${selector} block should close`);
+  return css.slice(start, end);
+}
 
 test('home page is a display-first collaboration wall with bounded detail entry points', () => {
   const html = fs.readFileSync(INDEX_PATH, 'utf8');
@@ -30,7 +39,8 @@ test('home page presents the contribution guide as a separate page action', () =
   assert.doesNotMatch(nav[0], /guide\.html|开始贡献/);
   assert.match(html, /class="[^"]*guide-entry[^"]*"/);
   assert.match(html, /<small>教学页<\/small>/);
-  assert.match(guideHtml, /class="[^"]*guide-entry[^"]*guide-back[^"]*"/);
+  assert.match(guideHtml, /class="guide-doc-layout"/);
+  assert.match(guideHtml, /class="guide-sidebar-back" href="index\.html"/);
 });
 
 test('display wall keeps expanding data surfaces bounded by default', () => {
@@ -53,4 +63,15 @@ test('all-contributors drawer separates status, source, badge, and profile link 
   assert.match(script, /class="wall-drawer-recent-text"/);
   assert.match(script, /class="wall-drawer-source"/);
   assert.match(script, /class="wall-drawer-profile-link"/);
+});
+
+test('board column action links stay on one line in constrained desktop widths', () => {
+  const css = fs.readFileSync(STYLES_PATH, 'utf8');
+  const titleBlock = cssBlock(css, '.board-column-title');
+  const linkBlock = cssBlock(css, '.board-column-link');
+
+  assert.match(titleBlock, /min-width:\s*0;/);
+  assert.match(titleBlock, /flex:\s*1\s+1\s+auto;/);
+  assert.match(linkBlock, /flex:\s*0\s+0\s+auto;/);
+  assert.match(linkBlock, /white-space:\s*nowrap;/);
 });

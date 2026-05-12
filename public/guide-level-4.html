@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>5. PR Review 与修错 | Open Source Pulse Wall</title>
+  <meta name="description" content="处理 Pull Request 检查失败、review 评论、追加提交和同步 fork 的教学章节。" />
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="paper-grain" aria-hidden="true"></div>
+
+  <main class="guide-doc-layout">
+    <aside class="guide-sidebar" aria-label="章节目录">
+      <a class="guide-sidebar-brand" href="guide.html">
+        <strong>Open Source Pulse Wall</strong>
+        <small>GitHub 分级教学</small>
+      </a>
+      <nav class="guide-sidebar-nav">
+        <a href="guide.html">课程目录</a>
+        <a href="guide-level-0.html">1. GitHub 协作地图</a>
+        <a href="guide-level-1.html">2. GitHub 网页端贡献</a>
+        <a href="guide-level-2.html">3. VS Code 全流程</a>
+        <a href="guide-level-3.html">4. 命令行路径</a>
+        <a class="is-active" href="guide-level-4.html">5. PR Review 与修错</a>
+        <a href="guide-profile-lab.html">6. Profile 字段实验</a>
+      </nav>
+      <a class="guide-sidebar-back" href="index.html">返回展示墙</a>
+    </aside>
+
+    <article class="guide-doc-main">
+      <div class="guide-video-placeholder">
+        <span>视频占位</span>
+        <p>建议视频：演示一个失败检查和一条 review 评论，展示如何在原 Pull Request 上继续提交，而不是重新开一个 PR。</p>
+      </div>
+
+      <h1>5. PR Review 与修错</h1>
+      <p class="guide-doc-lead">Pull Request 发出后，协作才真正开始。自动检查、老师 review、同学评论和追加提交都属于正常流程。学生要学会读反馈，而不是一看到红叉就关闭 PR。</p>
+
+      <section class="guide-doc-section">
+        <h2>创建 PR 时先检查方向</h2>
+        <p>PR 页面最重要的是 base 和 compare。base 应该是老师仓库的 `main`，compare 应该是你自己 Fork 里的任务分支。如果这两个方向选反，页面会显示一堆不相关修改，甚至像是要把老师仓库合并到自己的 Fork。</p>
+        <ul class="guide-doc-list">
+          <li>base repository：`nanzhi84/open-source-pulse-wall`。</li>
+          <li>base branch：`main`。</li>
+          <li>head repository：你的 GitHub 用户名下的 Fork。</li>
+          <li>compare branch：本次任务分支，例如 `add-your-profile`。</li>
+        </ul>
+      </section>
+
+      <div class="guide-two-shots">
+        <figure class="guide-shot">
+          <img src="guide-assets/06-compare-page.png" alt="GitHub Compare changes 页面截图。" loading="lazy" />
+          <figcaption>创建 PR 时检查 base 和 compare，避免把目标分支选错。</figcaption>
+        </figure>
+        <figure class="guide-shot">
+          <img src="guide-assets/08-review-docs.png" alt="GitHub 官方 Pull Request review 文档截图。" loading="lazy" />
+          <figcaption>Review 是协作的一部分。改完后继续 push，不需要重新开一个 PR。</figcaption>
+        </figure>
+      </div>
+
+      <section class="guide-doc-section">
+        <h2>看到检查失败怎么办</h2>
+        <ol class="guide-doc-list">
+          <li>不要关闭 PR，也不要重新 fork。</li>
+          <li>点进失败的 check，找到具体命令和报错。</li>
+          <li>先定位文件名。如果报错提到 `data/profiles/xxx.json`，就只检查这个文件。</li>
+          <li>再定位字段名。如果报错提到 `github`、`stack`、`style`，就去 Profile 字段实验章节查规则。</li>
+          <li>在同一个分支修正文件，重新 commit 和 push。</li>
+          <li>回到 PR 页面，等待检查重新运行。</li>
+        </ol>
+      </section>
+
+      <section class="guide-doc-section">
+        <h2>收到 review 评论怎么办</h2>
+        <p>review 评论通常不是否定，而是在指出需要修改的地方。学生应该先判断评论属于哪一种：格式问题、字段规则问题、文件位置问题、PR 方向问题，还是表达建议。能改代码的，就在原分支继续改；需要解释的，就在评论下回复说明。</p>
+        <ul class="guide-doc-list">
+          <li>如果评论说文件名不对，重命名文件后再提交。</li>
+          <li>如果评论说 JSON 格式不对，先在 VS Code 修红线，再运行 `npm run validate`。</li>
+          <li>如果评论说 PR 包含无关文件，先确认自己是否误提交了其他文件。</li>
+          <li>如果评论只是建议改文案，可以直接改 `motto` 或 `role` 后再次提交。</li>
+        </ul>
+      </section>
+
+      <section class="guide-doc-section">
+        <h2>为什么不用重新开 PR</h2>
+        <p>Pull Request 跟一个分支绑定。只要你继续往同一个分支 push 新 commit，PR 页面会自动更新。重新开 PR 反而会让讨论断掉，老师也看不到你是如何根据反馈修正的。</p>
+        <pre><code>git add data/profiles/your-github-id.json
+git commit -m "fix: update profile format"
+git push origin add-your-profile</code></pre>
+      </section>
+
+      <section class="guide-doc-section">
+        <h2>同步 Fork 的时机</h2>
+        <p>如果老师仓库在你 Fork 之后已经更新，GitHub 页面可能提示你的分支落后。第一次添加 Profile 时通常不需要急着处理复杂冲突；如果准备开始新的任务，先同步 Fork，再从最新的 `main` 开新分支，会减少后续 PR 冲突。</p>
+      </section>
+
+      <nav class="guide-doc-pager" aria-label="章节导航">
+        <a href="guide-level-3.html">上一章：4. 命令行路径</a>
+        <a href="guide.html">返回目录</a>
+        <a href="guide-profile-lab.html">下一章：6. Profile 字段实验</a>
+      </nav>
+    </article>
+  </main>
+</body>
+</html>
