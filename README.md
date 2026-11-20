@@ -186,3 +186,5 @@ open-source-pulse-wall/
 ## 许可证
 
 MIT
+
+<!-- e2e history test -->
