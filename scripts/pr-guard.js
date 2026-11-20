@@ -201,10 +201,15 @@ function evaluatePrGuard({
         existingProfileMap.set(stemKey, filename);
       }
 
+      const hasBom = raw.charCodeAt(0) === 0xfeff;
+      const parseTarget = hasBom ? raw.slice(1) : raw;
       let parsed;
       try {
-        parsed = JSON.parse(raw);
+        parsed = JSON.parse(parseTarget);
       } catch (error) {
+        if (hasBom) {
+          contentErrors.push(`${filePath}: JSON 文件不能包含 UTF-8 BOM`);
+        }
         contentErrors.push(`${filePath}: JSON 解析失败，${error.message}`);
         continue;
       }
@@ -269,10 +274,15 @@ function evaluatePrGuard({
         contentErrors.push(`data/cheers/${target}: 寄语最多 ${CHEERS_MAX_PER_PROFILE} 条，请删减`);
       }
 
+      const hasBom = raw.charCodeAt(0) === 0xfeff;
+      const parseTarget = hasBom ? raw.slice(1) : raw;
       let parsed;
       try {
-        parsed = JSON.parse(raw);
+        parsed = JSON.parse(parseTarget);
       } catch (error) {
+        if (hasBom) {
+          contentErrors.push(`${filePath}: JSON 文件不能包含 UTF-8 BOM`);
+        }
         contentErrors.push(`${filePath}: JSON 解析失败，${error.message}`);
         continue;
       }

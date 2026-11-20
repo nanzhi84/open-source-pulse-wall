@@ -284,8 +284,12 @@ function readAndValidateAll({ rootDir = ROOT } = {}) {
       let profile;
       try {
         raw = fs.readFileSync(fullPath, 'utf8');
-        profile = JSON.parse(raw);
+        const hasBom = raw.charCodeAt(0) === 0xfeff;
+        profile = JSON.parse(hasBom ? raw.slice(1) : raw);
       } catch (error) {
+        if (typeof raw === 'string' && raw.charCodeAt(0) === 0xfeff) {
+          errors.push(`${relPath}: JSON 文件不能包含 UTF-8 BOM`);
+        }
         errors.push(`${name}: JSON 解析失败，${error.message}`);
         continue;
       }
@@ -418,8 +422,12 @@ function readAndValidateAll({ rootDir = ROOT } = {}) {
         let parsed;
         try {
           raw = fs.readFileSync(fullPath, 'utf8');
-          parsed = JSON.parse(raw);
+          const hasBom = raw.charCodeAt(0) === 0xfeff;
+          parsed = JSON.parse(hasBom ? raw.slice(1) : raw);
         } catch (error) {
+          if (typeof raw === 'string' && raw.charCodeAt(0) === 0xfeff) {
+            errors.push(`${relPath}: JSON 文件不能包含 UTF-8 BOM`);
+          }
           errors.push(`${relPath}: JSON 解析失败，${error.message}`);
           continue;
         }
