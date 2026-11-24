@@ -6,6 +6,7 @@
 - **课堂贡献教程**：[docs/CONTRIBUTING.md](./docs/CONTRIBUTING.md)
 - **进阶积分玩法**：[docs/SCORING.md](./docs/SCORING.md)
 - **Git 课程课件**：[docs/git-course-slides.html](./docs/git-course-slides.html)
+- **Git 课程视频讲解**：[docs/git-course-video.mp4](./docs/git-course-video.mp4)（配套字幕：[docs/git-course-video.srt](./docs/git-course-video.srt)）
 - **拓展阅读 · 从零理解 Git 底层原理**：<https://yoryon.com/c/git-from-scratch/>
 
 ## 课堂三项任务
@@ -40,7 +41,9 @@ open-source-pulse-wall/
 ├── docs/
 │   ├── CONTRIBUTING.md             # 课堂贡献步骤指南与命令速查
 │   ├── SCORING.md                  # 可选的进阶积分与卡片皮肤玩法说明
-│   └── git-course-slides.html      # Git 协作实战课程课件（HTML 幻灯片）
+│   ├── git-course-slides.html      # Git 协作实战课程课件（HTML 幻灯片）
+│   ├── git-course-video.mp4        # Git 课程动画视频讲解（1080p）
+│   └── git-course-video.srt        # 视频讲解配套中文字幕
 ├── .github/
 │   ├── CODEOWNERS                  # 自动指派老师与维护者 Review（@nanzhi84 @YJLEC）
 │   ├── ISSUE_TEMPLATE/             # 提问求助 / Bug / 改进想法 模板
